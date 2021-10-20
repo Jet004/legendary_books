@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/script.js" defer></script>
+    <script src="../js/manage_authors.js" defer></script>
+    <title>Manage Authors</title>
+</head>
+<body>
+    <header></header>
+    <nav></nav>
+    <main>
+        <div class="form-cont">
+            <form id="author-form" action="" novalidate onsubmit="event.preventDefault()">
+                <div class="form-item">
+                    <input type="text" name="firstName" id="first-name">
+                    <label for="first-name">First Name</label>
+                </div>
+                <div class="form-item">
+                    <input type="text" name="lastName" id="last-name">
+                    <label for="last-name">Last Name</label>
+                </div>
+                <div class="form-item">
+                    <input type="text" name="nationality" id="nationality">
+                    <label for="nationality">Nationality</label>
+                </div>
+                <div class="form-item">
+                    <input type="number" name="birthYear" id="birth-year">
+                    <label for="birth-year">Year of Birth</label>
+                </div>
+                <div class="form-item">
+                    <input type="number" name="deathYear" id="death-year">
+                    <label for="death-year">Year of Death</label>
+                </div>
+                <input id="add-author-btn" type="button" value="Add Author">
+            </form>
+        </div>
+    </main>
+    <footer></footer>
+</body>
+</html>
