@@ -11,4 +11,10 @@ document.getElementById('add-author-btn').addEventListener('click', () => {
         },
         body: formDataJSON
     })
+    .then(res => res.json())
+    .then(data => {
+        let [ responseMessageDiv ] = document.getElementsByClassName('response-message')
+        responseMessageDiv.innerHTML = data
+        setTimeout(() => {responseMessageDiv.innerHTML = ''}, 5000)
+    })
 })

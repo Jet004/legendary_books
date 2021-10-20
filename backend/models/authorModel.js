@@ -3,16 +3,19 @@
 const db = require('./database')
 
 module.exports.getAllAuthors = () => {
-
+    return db.query("SELECT * FROM authors")
 }
 
-module.exports.getAuthorById = () => {
-
+module.exports.getAuthorById = (id) => {
+    return db.query(
+        "SELECT * FROM authors WHERE authorID = ?",
+        [id]
+    )
 }
 
 module.exports.addAuthor = (authorValues) => {
-    db.query(
-        "INSERT INTO author(firstName, lastName, nationality, birthYear, deathYear) "+
+    return db.query(
+        "INSERT INTO authors(firstName, lastName, nationality, birthYear, deathYear) "+
         "VALUES(?, ?, ?, ?, ?)",
         [authorValues.firstName, authorValues.lastName, authorValues.nationality, authorValues.birthYear, authorValues.deathYear]
     )

@@ -4,10 +4,10 @@ const mysql = require('mysql2')
 // Create a connection pool
 const connection = mysql.createPool({
     host: 'localhost',
-    port: '3306',
+    port: '8889',
     user: 'root',
-    password: '',
-    database: 'legendary_books'
+    password: 'root',
+    database: 'legendaryBooks'
 })
 
 // This wrapper will allow the use of promise functions like 
