@@ -20,3 +20,11 @@ module.exports.addAuthor = (authorValues) => {
         [authorValues.firstName, authorValues.lastName, authorValues.nationality, authorValues.birthYear, authorValues.deathYear]
     )
 }
+
+module.exports.searchAuthorName = (queryString) => {
+    queryString = `%${queryString}%`
+    return db.query(
+        "SELECT authorID, firstName, lastName, nationality, birthYear, deathYear FROM authors WHERE firstName LIKE ? OR lastName LIKE ?",
+        [queryString, queryString]
+    )
+}

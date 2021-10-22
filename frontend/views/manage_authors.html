@@ -13,27 +13,31 @@
     <nav></nav>
     <main>
         <div class="form-cont">
-            <div class="response-message"></div>
-            <form id="author-form" action="" novalidate onsubmit="event.preventDefault()">
+            <input type="text" name="authorSearch" id="authorSearch">
+            <div id="author-search-output"></div>
+            <form id="author-form" action="" novalidate>
                 <div class="form-item">
-                    <input type="text" name="firstName" id="first-name">
-                    <label for="first-name">First Name</label>
+                    <input type="text" name="authorID" id="authorID" hidden readonly>
                 </div>
                 <div class="form-item">
-                    <input type="text" name="lastName" id="last-name">
-                    <label for="last-name">Last Name</label>
+                    <input type="text" name="firstName" id="firstName">
+                    <label for="firstName">First Name</label>
+                </div>
+                <div class="form-item">
+                    <input type="text" name="lastName" id="lastName">
+                    <label for="lastName">Last Name</label>
                 </div>
                 <div class="form-item">
                     <input type="text" name="nationality" id="nationality">
                     <label for="nationality">Nationality</label>
                 </div>
                 <div class="form-item">
-                    <input type="number" name="birthYear" id="birth-year">
-                    <label for="birth-year">Year of Birth</label>
+                    <input type="number" name="birthYear" id="birthYear">
+                    <label for="birthYear">Year of Birth</label>
                 </div>
                 <div class="form-item">
-                    <input type="number" name="deathYear" id="death-year">
-                    <label for="death-year">Year of Death</label>
+                    <input type="number" name="deathYear" id="deathYear">
+                    <label for="deathYear">Year of Death</label>
                 </div>
                 <input id="add-author-btn" type="button" value="Add Author">
             </form>

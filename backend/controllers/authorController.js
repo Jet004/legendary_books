@@ -20,7 +20,11 @@ router.get('/authors', (req,res) => {
 // Define a route for /api/authors/:id which returns a single author
 // with the id specified by the user
 router.get('/authors/:id', (req,res) => {
-    // TODO: Sanitise id input - only accept numbers
+    // Sanitise id parameter - only accept numbers
+    if(isNaN(req.params.id)){
+        // Respond with an error
+        res.status(400).json("Invalid id - user id must be a number")
+    }
 
     authorModel.getAuthorById(req.params.id)
         .then(result => {
@@ -33,6 +37,24 @@ router.get('/authors/:id', (req,res) => {
         .catch(error => {
             console.log(error)
             res.status(500).json("query error")
+        })
+})
+
+// Define a route for /api/authors/search/:id which returns an array of authors
+// which match the name search query
+router.get('/authors/search/:id', (req,res) => {
+    // TODO: Sanitise user input
+    authorModel.searchAuthorName(req.params.id)
+        .then(results => {
+            if(results.length > 0){
+                res.status(200).json(results)
+            } else {
+                res.status(404).json('no results')
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json('query error')
         })
 })
 
