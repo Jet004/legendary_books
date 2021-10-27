@@ -72,7 +72,10 @@ router.post('/authors/add', (req,res) => {
     // Add author to the database
     authorModel.addAuthor(author)
         .then(result => {
-            res.status(200).json("Author added to database with id: " + result.insertId)
+            res.status(200).json({
+                "status": "Author added to database with id: " + result.insertId,
+                "authorID": result.insertId
+            })
         })
         .catch(error => {
             console.log(error)
@@ -80,12 +83,44 @@ router.post('/authors/add', (req,res) => {
         })
 })
 
-router.patch('/author/:id', (req,res) => {
-    // TODO
+router.patch('/authors/:id', (req,res) => {
+    // Get form data from request body
+    let author = req.body
+    
+    // TODO: Sanitise form data
+    if(author.deathYear === ''){
+        author.deathYear = null
+    }
+
+    // Update author details in the database
+    authorModel.updateAuthor(author)
+        .then(result => {
+            if(result.affectedRows > 0){
+                res.status(200).json("successfully updated author with id: " + author.authorID)
+            } else {
+                res.status(404).json("could not update author details: no author with id: " + author.authorID)
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json("query error")
+        })
 })
 
 router.delete('/authors/:id', (req,res) => {
-    // TODO
+    // TODO: Sanitise id
+    authorModel.deleteAuthor(req.params.id)
+        .then(result => {
+            if(result.affectedRows > 0){
+                res.status(200).json("successfully deleted author with id: " + req.params.id)
+            } else {
+                res.status(404).json("could not delete author: no author with id: " + req.params.id)
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json("query error")
+        })
 })
 
 module.exports = router

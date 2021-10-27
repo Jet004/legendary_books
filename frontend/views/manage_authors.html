@@ -16,6 +16,9 @@
             <input type="text" name="authorSearch" id="authorSearch">
             <div id="author-search-output"></div>
             <form id="author-form" action="" novalidate>
+                <div class="form-clear">
+                    <input type="button" value="Clear Form" id="clear-form-btn">
+                </div>
                 <div class="form-item">
                     <input type="text" name="authorID" id="authorID" hidden readonly>
                 </div>
@@ -39,7 +42,11 @@
                     <input type="number" name="deathYear" id="deathYear">
                     <label for="deathYear">Year of Death</label>
                 </div>
-                <input id="add-author-btn" type="button" value="Add Author">
+                <div class="form-btns">
+                    <input id="add-author-btn" type="button" value="Add Author">
+                    <input id="update-author-btn" type="button" value="Update Author">
+                    <input id="delete-author-btn" type="button" value="Delete Author">
+                </div>
             </form>
         </div>
     </main>
