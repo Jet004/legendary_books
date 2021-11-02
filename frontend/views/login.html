@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+    <script src="js/script.js" defer></script>
+    <script src="js/login.js" defer></script>
+    <title>LB: Login</title>
+</head>
+<body>
+    <header></header>
+    <nav></nav>
+    <main>
+        <section class="main-container">
+            <h1>Login Form</h1>
+            <form action="#" id="user-form">
+                <div class="form-item">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" pattern="[A-Za-z0-9]{3,}" placeholder="Enter a username" maxlength="100" required>
+                </div>
+                <div class="form-item">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" pattern="[A-Za-z0-9]{6,100}" placeholder="Password" maxlength="100" required>
+                </div>
+                <div class="form-submit">
+                    <input type="submit" name="login" value="Log in">
+                </div>
+            </form>
+        </section>
+    </main>
+    <footer></footer>
+</body>
+</html>

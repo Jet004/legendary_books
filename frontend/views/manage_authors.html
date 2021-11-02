@@ -6,49 +6,62 @@
     <link rel="stylesheet" href="../css/style.css">
     <script src="../js/script.js" defer></script>
     <script src="../js/manage_authors.js" defer></script>
-    <title>Manage Authors</title>
+    <title>LB: Manage Authors</title>
 </head>
 <body>
     <header></header>
     <nav></nav>
     <main>
-        <div class="form-cont">
-            <input type="text" name="authorSearch" id="authorSearch">
-            <div id="author-search-output"></div>
-            <form id="author-form" action="" novalidate>
-                <div class="form-clear">
-                    <input type="button" value="Clear Form" id="clear-form-btn">
+        <section class="main-container">
+            <h1>Manage Authors</h1>
+            
+            <div class="form-cont">
+                <div class="form-item search">
+                    <input type="text" name="authorSearch" id="authorSearch" placeholder="Enter an author's name" pattern="[A-Za-z'.]{0,100}">
+                    <div id="author-search-output"></div>
                 </div>
-                <div class="form-item">
-                    <input type="text" name="authorID" id="authorID" hidden readonly>
-                </div>
-                <div class="form-item">
-                    <input type="text" name="firstName" id="firstName">
-                    <label for="firstName">First Name</label>
-                </div>
-                <div class="form-item">
-                    <input type="text" name="lastName" id="lastName">
-                    <label for="lastName">Last Name</label>
-                </div>
-                <div class="form-item">
-                    <input type="text" name="nationality" id="nationality">
-                    <label for="nationality">Nationality</label>
-                </div>
-                <div class="form-item">
-                    <input type="number" name="birthYear" id="birthYear">
-                    <label for="birthYear">Year of Birth</label>
-                </div>
-                <div class="form-item">
-                    <input type="number" name="deathYear" id="deathYear">
-                    <label for="deathYear">Year of Death</label>
-                </div>
-                <div class="form-btns">
-                    <input id="add-author-btn" type="button" value="Add Author">
-                    <input id="update-author-btn" type="button" value="Update Author">
-                    <input id="delete-author-btn" type="button" value="Delete Author">
-                </div>
-            </form>
-        </div>
+                <form id="author-form" novalidate>
+                    <div class="form-clear">
+                        <input type="button" value="Clear Form" id="clear-form-btn">
+                    </div>
+                    <div class="form-item" id="authorID-cont">
+                        <input type="text" name="authorID" id="authorID" pattern="[0-9]{0,10}" hidden readonly>
+                        <div class="error"></div>
+                    </div>
+
+                    <div class="form-item" id="firstName-cont">
+                        <input type="text" name="firstName" id="firstName" pattern="[A-Za-z'.]{2,100}" placeholder="First Name" required>
+                        <label for="firstName">First Name</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item" id="lastName-cont">
+                        <input type="text" name="lastName" id="lastName" pattern="[A-Za-z'.]{2,100}" placeholder="Last Name" required>
+                        <label for="lastName">Last Name</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item" id="nationality-cont">
+                        <input type="text" name="nationality" id="nationality" pattern="[A-Za-z]{2,100}" placeholder="Nationality" required>
+                        <label for="nationality">Nationality</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item" id="birthYear-cont">
+                        <input type="number" name="birthYear" id="birthYear" pattern="[0-9]{0,4}" placeholder="Year of Birth" required>
+                        <label for="birthYear">Year of Birth</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item" id="deathYear-cont">
+                        <input type="number" name="deathYear" id="deathYear" pattern="[0-9]{0,4}" placeholder="Year of Death">
+                        <label for="deathYear">Year of Death</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-submit">
+                        <input id="add-author-btn" type="button" value="Add Author">
+                        <input id="update-author-btn" type="button" value="Update Author">
+                        <input id="delete-author-btn" type="button" value="Delete Author">
+                    </div>
+                </form>
+            </div>
+        </section>
     </main>
     <footer></footer>
 </body>

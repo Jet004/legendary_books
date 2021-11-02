@@ -12,6 +12,15 @@ const clearSearchOutput = () => {
 
 // Set click event listenter on add author button
 document.getElementById('add-author-btn').addEventListener('click', () => {
+    // Validate form data
+    let formPassedValidation = validateFormOnSubmit(() => {
+        return false
+    })
+
+    console.log(formPassedValidation)
+
+    if(!formPassedValidation) return
+
     // Get form element and convert data to json
     const form = document.getElementById('author-form')
     const formDataJSON = JSON.stringify(Object.fromEntries(new FormData(form)))
