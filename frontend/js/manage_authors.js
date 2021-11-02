@@ -13,11 +13,7 @@ const clearSearchOutput = () => {
 // Set click event listenter on add author button
 document.getElementById('add-author-btn').addEventListener('click', () => {
     // Validate form data
-    let formPassedValidation = validateFormOnSubmit(() => {
-        return false
-    })
-
-    console.log(formPassedValidation)
+    let formPassedValidation = validateFormOnSubmit()
 
     if(!formPassedValidation) return
 

@@ -21,9 +21,6 @@
                     <div id="author-search-output"></div>
                 </div>
                 <form id="author-form" novalidate>
-                    <div class="form-clear">
-                        <input type="button" value="Clear Form" id="clear-form-btn">
-                    </div>
                     <div class="form-item" id="authorID-cont">
                         <input type="text" name="authorID" id="authorID" pattern="[0-9]{0,10}" hidden readonly>
                         <div class="error"></div>
@@ -45,7 +42,7 @@
                         <div class="error"></div>
                     </div>
                     <div class="form-item" id="birthYear-cont">
-                        <input type="number" name="birthYear" id="birthYear" pattern="[0-9]{0,4}" placeholder="Year of Birth" required>
+                        <input type="number" name="birthYear" id="birthYear" pattern="[0-9]{0,4}" placeholder="Year of Birth" maxlength="4" required>
                         <label for="birthYear">Year of Birth</label>
                         <div class="error"></div>
                     </div>
@@ -58,6 +55,9 @@
                         <input id="add-author-btn" type="button" value="Add Author">
                         <input id="update-author-btn" type="button" value="Update Author">
                         <input id="delete-author-btn" type="button" value="Delete Author">
+                    </div>
+                    <div class="form-clear">
+                        <input type="button" value="Clear Form" id="clear-form-btn">
                     </div>
                 </form>
             </div>
