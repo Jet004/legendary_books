@@ -1,15 +1,24 @@
 # Legendary Books Web Application
 
-TODO:
-authorController
-    - Sanitise user input in crud functions
-    - Sanitise id from uri in crud functions
+-- TODO
+
+bookModel
+bookController
+manage_books.html
+manage_books.js
+userModel
+userController
+manage_users.html
+manage_users.js
+loggingModel
+list_books.html
+list_books.js
+login.html
+login.js
 
 
-Frontend
+-- COMPLETE
+manage_authors.js
 manage_authors.html
-    - Add frontend form validation
-    - validate input data for search event function
-    - implement fetch to get header, nav and footer
-
-    - Clear error values when click in search author list
+authorController
+authorModel

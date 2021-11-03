@@ -17,7 +17,7 @@
             
             <div class="form-cont">
                 <div class="form-item search" id="author-search-cont">
-                    <input type="text" name="authorSearch" id="authorSearch" placeholder="Enter an author's name" pattern="[A-Za-z'. -]{0,100}">
+                    <input type="text" name="authorSearch" id="authorSearch" placeholder="Enter an author's name" pattern="[A-Za-z'. \\-]{0,100}">
                     <div class="search-output" id="author-search-output"></div>
                     <div class="error"></div>
                 </div>
@@ -28,12 +28,12 @@
                     </div>
 
                     <div class="form-item" id="firstName-cont">
-                        <input type="text" name="firstName" id="firstName" pattern="[A-Za-z'. -]{2,100}" placeholder="First Name" required>
+                        <input type="text" name="firstName" id="firstName" pattern="[A-Za-z'. \\-]{2,100}" placeholder="First Name" required>
                         <label for="firstName">First Name</label>
                         <div class="error"></div>
                     </div>
                     <div class="form-item" id="lastName-cont">
-                        <input type="text" name="lastName" id="lastName" pattern="[A-Za-z'. -]{2,100}" placeholder="Last Name" required>
+                        <input type="text" name="lastName" id="lastName" pattern="[A-Za-z'. \\-]{2,100}" placeholder="Last Name" required>
                         <label for="lastName">Last Name</label>
                         <div class="error"></div>
                     </div>
@@ -43,7 +43,7 @@
                         <div class="error"></div>
                     </div>
                     <div class="form-item" id="birthYear-cont">
-                        <input type="number" name="birthYear" id="birthYear" pattern="[0-9]{0,4}" placeholder="Year of Birth" maxlength="4" required>
+                        <input type="number" name="birthYear" id="birthYear" pattern="[0-9]{1,4}" placeholder="Year of Birth" maxlength="4" required>
                         <label for="birthYear">Year of Birth</label>
                         <div class="error"></div>
                     </div>

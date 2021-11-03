@@ -2,11 +2,76 @@
 const express = require('express')
 // Create router
 const router = express.Router()
+
+// Import express validation middleware
+const { param, body, validationResult } = require('express-validator')
+
 // Import author model so routed can perform changes to the database
 const authorModel = require('../models/authorModel')
 
+
+//--------------------- Define Validation Criteria ---------------------//
+
+// Set out validation criteria common to add/update author
+const validateCommon = [
+    // firstName must match: [A-Za-z'. \\-]{2,100} and not be empty
+    body('firstName').exists(checkFalsy = true).withMessage("Exists")
+        .matches("[A-Za-z'. \\-]").withMessage("Pattern")
+        .isLength({min:2, max:100}).withMessage("Length")
+        .trim(),
+    // lastName must match: [A-Za-z'. \\-]{2,100} and not be empty
+    body('lastName').exists(checkFalsy = true).withMessage("Exists")
+        .matches("[A-Za-z'. \\-]").withMessage("Pattern")
+        .isLength({min:2, max:100}).withMessage("Length")
+        .trim(),
+    // nationality must not be empty and must match: [A-Za-z]{2,100}
+    body('nationality').exists(checkFalsy = true).withMessage("Exists")
+        .matches("[A-Za-z]").withMessage("Pattern")
+        .isLength({min:2, max:100}).withMessage("Length")
+        .trim(),
+    // birthYear is INT, not empty, and 1 - 4 characters long
+    body('birthYear').exists(checkFalsy = true).withMessage("Exists")
+        .isInt().withMessage("Type: INT")
+        .isLength({min:1, max:4}).withMessage("Length")
+        .trim(),
+    // deathYear is either an empty string or convertable to a number, and 0 - 4 characters long
+    body('deathYear').exists().withMessage("Exists")
+        .isLength({min:0, max:4}).withMessage("Length")
+        .custom(value => value === '' || typeof Number(value) === 'number').withMessage("Custom: <empty string> || INT")
+        .trim()
+]
+
+// Set out validation criteria for user id in req.params
+const validateParamAuthorId = [
+    // Sanitise id parameter - only accept numbers
+    param('id').exists(checkFalsy = true).withMessage("Exists")
+        .isInt().withMessage("Type: INT")
+        .trim()
+]
+
+// Set out validation criteria for user id in body
+const validateBodyAuthorId = [
+    // Sanitise id parameter - only accept numbers
+    body('authorID').exists(checkFalsy = true).withMessage("Exists")
+        .isInt().withMessage("Type: INT")
+        .trim()
+]
+
+// Set out validation criteria for author name search
+const validateSearchAuthorName = [
+    // Sanitise user input - only accept [A-Za-z'.- ]
+    param('input').exists(checkFalsy = true).withMessage("Exists")
+        .matches("[A-Za-z',\\- ]").withMessage("Pattern")
+        .isLength({min:0, max:100}).withMessage("Length")
+        .trim()
+]
+
+
+//--------------------- Define Routes ---------------------//
+
 // Define route for /api/authors which returns a list of all authors
 router.get('/authors', (req,res) => {
+    // No incoming data to sanitise. Just go query the database
     authorModel.getAllAuthors()
         .then(result => {
             res.status(200).json(result)
@@ -19,18 +84,22 @@ router.get('/authors', (req,res) => {
 
 // Define a route for /api/authors/:id which returns a single author
 // with the id specified by the user
-router.get('/authors/:id', (req,res) => {
-    // Sanitise id parameter - only accept numbers
-    if(isNaN(req.params.id)){
-        // Respond with an error
-        res.status(400).json("Invalid id - user id must be a number")
+router.get('/authors/:id', validateParamAuthorId, (req,res) => {
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There is a validation error - respond with bad request
+        return res.status(400).json({ error: error.array()})
     }
 
+    // Query the database
     authorModel.getAuthorById(req.params.id)
         .then(result => {
             if(result.length > 0){
+                // We have a result, respond with result
                 res.status(200).json(result)
             } else {
+                // No author with that ID, respond with not found
                 res.status(404).json("could not get author with id: " + req.params.id)
             }
         })
@@ -42,9 +111,15 @@ router.get('/authors/:id', (req,res) => {
 
 // Define a route for /api/authors/search/:id which returns an array of authors
 // which match the name search query
-router.get('/authors/search/:id', (req,res) => {
-    // TODO: Sanitise user input
-    authorModel.searchAuthorName(req.params.id)
+router.get('/authors/search/:input', validateSearchAuthorName, (req,res) => {
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There is a validation error - respond with bad request
+        return res.status(400).json({ error: error.array()})
+    }
+
+    authorModel.searchAuthorName(req.params.input)
         .then(results => {
             if(results.length > 0){
                 res.status(200).json(results)
@@ -60,11 +135,18 @@ router.get('/authors/search/:id', (req,res) => {
 
 // Define a route for /api/authors/add to add an author to the database
 // based on sanitised form data provided by the user
-router.post('/authors/add', (req,res) => {
+router.post('/authors/add', validateCommon, (req,res) => {
     // Get form data from request body
     let author = req.body
 
-    // TODO: Sanitise form data
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There is a validation error - respond with bad request
+        return res.status(400).json({ error: error.array()})
+    }
+    // Set deathYear to NULL if empty to avoid database query errors
+    // (this is the only field which can be empty)
     if(author.deathYear === ''){
         author.deathYear = null
     }
@@ -83,11 +165,20 @@ router.post('/authors/add', (req,res) => {
         })
 })
 
-router.patch('/authors/:id', (req,res) => {
+// Define a route for /api/authors/update to update an author in the database
+// based on sanitised form data provided by the user
+router.patch('/authors/:id', validateCommon, validateParamAuthorId, validateBodyAuthorId, (req,res) => {
     // Get form data from request body
     let author = req.body
     
-    // TODO: Sanitise form data
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There is a validation error - respond with bad request
+        return res.status(400).json({ error: error.array() })
+    }
+    // Set deathYear to NULL if empty to avoid database query errors
+    // (this is the only field which can be empty)
     if(author.deathYear === ''){
         author.deathYear = null
     }
@@ -107,8 +198,13 @@ router.patch('/authors/:id', (req,res) => {
         })
 })
 
-router.delete('/authors/:id', (req,res) => {
-    // TODO: Sanitise id
+router.delete('/authors/:id', validateParamAuthorId, (req,res) => {
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There is a validation error - respond with bad request
+        return res.status(400).json({ error: error.array() })
+    }
     authorModel.deleteAuthor(req.params.id)
         .then(result => {
             if(result.affectedRows > 0){
