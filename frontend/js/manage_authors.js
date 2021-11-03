@@ -1,7 +1,7 @@
 // Clear search output
 const clearSearchOutput = () => {
     // Get the search output element
-    let authorSearchOutput = document.getElementById('author-search-output')
+    let authorSearchOutput = document.getElementsByClassName('search-output')[0]
     // Clear the existing output values
     authorSearchOutput.innerHTML = ''
     // Reset display settings
@@ -12,14 +12,14 @@ const clearSearchOutput = () => {
 
 // Set click event listenter on add author button
 document.getElementById('add-author-btn').addEventListener('click', () => {
-    // Validate form data
-    let formPassedValidation = validateFormOnSubmit()
-
-    if(!formPassedValidation) return
-
     // Get form element and convert data to json
     const form = document.getElementById('author-form')
     const formDataJSON = JSON.stringify(Object.fromEntries(new FormData(form)))
+
+    // Validate form data
+    let formPassedValidation = validateFormOnSubmit()
+    // return if form data doen't pass validation to prevent fetch request from running
+    if(!formPassedValidation) return
 
     // Send request to server and handle response
     fetch('/api/authors/add', {
@@ -49,9 +49,22 @@ document.getElementById('update-author-btn').addEventListener('click', () => {
     const formDataJSON = JSON.stringify(Object.fromEntries(new FormData(form)))
     
     // Get author id from hidden element to pass in request URI
-    const authorID = document.getElementById('authorID').value
+    const authorID = form['authorID']
+
+    // Validate form data with extra requirements
+    let formPassedValidation = validateFormOnSubmit(() => {
+        if(!authorID.value){
+            validityCheckFailed(authorID, true)
+            return false
+        }
+        return true
+    })
+    // return if form data doen't pass validation to prevent fetch request from running
+    if(!formPassedValidation) return
+
+
     // Send request to server and handle response
-    fetch(`/api/authors/${authorID}`, {
+    fetch(`/api/authors/${authorID.value}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
@@ -73,7 +86,18 @@ document.getElementById('update-author-btn').addEventListener('click', () => {
 // Set event listener on delete author button
 document.getElementById('delete-author-btn').addEventListener('click', () => {
     // Get author id so we know which author to delete
-    const authorID = document.getElementById('authorID').value
+    const authorID = document.getElementById('authorID')
+    
+    // Validate form data with extra requirements
+    let formPassedValidation = () => {
+        if(!authorID.value){
+            validityCheckFailed(authorID, true)
+            return false
+        }
+        return true
+    }
+    // return if form data doen't pass validation to prevent fetch request from running
+    if(!formPassedValidation()) return
     
     // Ask for confirmation that user actually wants to delete the author
     const confirmed = confirm("Are you sure you want to delete this author?")
@@ -81,12 +105,13 @@ document.getElementById('delete-author-btn').addEventListener('click', () => {
     // Only send request if user has confirmed the deletion
     if(confirmed){
         // Send request to server and handle response
-        fetch(`/api/authors/${authorID}`,{
+        fetch(`/api/authors/${authorID.value}`,{
             method: 'DELETE'
         })
             .then(response => response.json())
             .then(data => {
                 clearSearchOutput()
+                clearFormFields()
                 alert(data)
             })
     }
@@ -108,11 +133,24 @@ authorSearch.addEventListener('input', () => {
 
     // Get the current input value within the search box
     const inputData = authorSearch.value
-    
-    // TODO: Validate input data
-    if(inputData === ''){
-        return
+
+    // Validate search input data
+    let formPassedValidation = () => {
+        removeErrorForceDisplay(authorSearch)
+        if(!authorSearch.checkValidity()){
+            // Check to see if input data conforms to the pattern for a name
+            console.log(authorSearch.checkValidity())
+            validityCheckFailed(authorSearch, true)
+            return false
+        } else if(!authorSearch.value){
+            // Stop fetch from running when there is no input data
+            return false 
+        } else {
+            return true
+        }
     }
+    // return if form data doen't pass validation to prevent fetch request from running
+    if(!formPassedValidation()) return
 
     // Send data to backend to retrieve authors matching the given string
     fetch(`/api/authors/search/${inputData}`)
@@ -198,6 +236,10 @@ const clearFormFields = () => {
             elem.value = ''
         }
     }
+
+    // Clear search box
+    let searchBox = document.getElementById('authorSearch')
+    searchBox.value = ''
 }
 
 // Set click event listener on clear form button

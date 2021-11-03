@@ -36,6 +36,8 @@ document.addEventListener('load', fetchSiteIncludes())
 
 // Custome validation messages for each input based on id
 const errorMessage = {
+    authorSearch: "Please enter a valid name",
+    authorID: "Search for the author you would like to update/delete",
     firstName: "Your first name should only contain letters and be longer than two characters long",
     lastName: "Your last name should only contain letters and be longer than two characters long",
     nationality: "Please provide a valid nationality",
@@ -43,33 +45,47 @@ const errorMessage = {
     deathYear: "Please provide a valid year",
     email: "Provide a valid email address",
     password: `Your password should contain: a capital letter, a lower case letter, a number, no spaces and be longer than 6 characters long`,
-    "confirm-password": "Passwords must match",
-
+    "confirm-password": "Passwords must match"
 };
 
-function checkElementValid(elem, forceErrorDisplay = false) {
+const validityCheckFailed = (elem, forceErrorDisplay = false) => {
+    // Set custom error message
+    elem.setCustomValidity(errorMessage[elem.getAttribute("id")]);
+    // Get error div
+    let errorDiv = document.querySelector(
+        "#" + elem.parentNode.getAttribute("id") + "> .error"
+    );
+
+    // Set error div to custom error message
+    errorDiv.innerHTML = elem.validationMessage;
+
+    // Set border top styling (Doing so in CSS creates conflicts with the
+    // checkbox validation)
+    errorDiv.style.borderTop = "1px solid #ef233c";
+    if(forceErrorDisplay === true) errorDiv.style.display = 'block'
+    //console.log(elem.id + " DISPLAY: " + errorDiv.style.display)
+}
+
+const removeErrorForceDisplay = (elem) => {
     // Reset error message
     elem.setCustomValidity("");
+    // Reset error message on hidden id element
+
     // Get error div and remove forced display
     let errorDiv = document.querySelector(
         "#" + elem.parentNode.getAttribute("id") + "> .error"
     );
     errorDiv.style.removeProperty('display')
-    console.log(elem.parentNode.id)
+}
+
+const checkElementValid = (elem, forceErrorDisplay = false) => {
+    // Reset error message and hide error div
+    removeErrorForceDisplay(elem)
 
     // Check validity of current element
     if (!elem.checkValidity()) {
         // Element has not passed validity check
-        // Set custom error message
-        elem.setCustomValidity(errorMessage[elem.getAttribute("id")]);
-
-        //Set error div to error message
-        errorDiv.innerHTML = elem.validationMessage;
-        // Set border top styling (Doing so in CSS creates conflicts with the
-        // checkbox validation)
-        errorDiv.style.borderTop = "1px solid #ef233c";
-        if(forceErrorDisplay === true) errorDiv.style.display = 'block'
-        console.log(elem.id + " DISPLAY: " + errorDiv.style.display)
+        validityCheckFailed(elem, forceErrorDisplay)
         return false;
     } else {
         // Element has passed validity check
@@ -83,7 +99,7 @@ function checkElementValid(elem, forceErrorDisplay = false) {
 // callBack parameter takes a function with extra validation checks
 // which resolve to true if passed and false if failed validation
 // default value of true is returned if no callback is provided
-function validateFormOnSubmit(callBack = () => true) {
+const validateFormOnSubmit = (callBack = () => true) => {
     // Get all form controls
     const [form] = document.getElementsByTagName("form");
 
@@ -92,13 +108,15 @@ function validateFormOnSubmit(callBack = () => true) {
     for (let elem of form.elements) {
         // Check all inputs except buttonss
         if(elem.type != 'button'){
-            console.log(elem.id + "Check validity")
             errorCheck = checkElementValid(elem, true) && errorCheck;
         }
     }
 
     // Run extra validation tests specific to current fetch request
-    errorCheck = errorCheck && callBack()
+    // the callBack function is defined in the fetch request which
+    // called the validate form function.
+    const extraValidityChecksPassed = callBack()
+    errorCheck = errorCheck && extraValidityChecksPassed
 
     if (!errorCheck) {
         // Prevent form submission on form error
@@ -109,9 +127,9 @@ function validateFormOnSubmit(callBack = () => true) {
     }
 }
 
-// Check input validity on input and show custom error message depending on
+// Check input validity on input to form and show custom error message depending on
 // element id
-function validateOnFormInput(e) {
+const validateOnFormInput = (e) => {
     // Capture the element which received input
     const elem = e.target;
 
@@ -119,8 +137,31 @@ function validateOnFormInput(e) {
     checkElementValid(elem);
 }
 
-// Set for event listeners to handle form validation on form input
+// Set for event listeners to handle form validation on form input/change
 let [ formElement ] = document.getElementsByTagName('form')
 formElement.addEventListener('input', validateOnFormInput)
+formElement.addEventListener('change', validateOnFormInput)
+
+// Set input event listener to clear error on search input
+let searchElement = document.getElementsByClassName('search')[0]
+searchElement.addEventListener('input', (e) => {
+    // Remove id field error message
+    let idField = document.getElementsByClassName('hidden-id')[0]
+    removeErrorForceDisplay(idField)
+})
+
+// Set event listener to clear all form error values when search item is seleced
+let searchOutput = document.getElementsByClassName('search-output')[0]
+let formElements = document.getElementsByTagName('form')[0].elements
+searchOutput.addEventListener('click', () => {
+    for(elem of formElements){
+        if(elem.type != 'button'){
+            // Remove all error messages
+            removeErrorForceDisplay(elem)
+        }
+    }
+
+})
+
 
 //----------------------------- END Form Validation -----------------------------//
