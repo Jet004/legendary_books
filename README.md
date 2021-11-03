@@ -2,7 +2,6 @@
 
 -- TODO
 
-bookModel
 bookController
 manage_books.html
 manage_books.js
@@ -16,6 +15,11 @@ list_books.js
 login.html
 login.js
 
+manage_authors -- tidy up css
+style.css
+
+-- SHOULD BE DONE
+bookModel
 
 -- COMPLETE
 manage_authors.js
