@@ -14,9 +14,12 @@ server.use(express.urlencoded({extended: true}))
 // Import author routes and add to api
 const authorController = require('./backend/controllers/authorController')
 server.use('/api', authorController)
+// Import book routes and add to api
+const bookController = require('./backend/controllers/bookController')
+server.use('/api', bookController)
 
 
-
+// Start server
 server.listen(port, () => {
     console.log("Server listening on port: " + port)
 })

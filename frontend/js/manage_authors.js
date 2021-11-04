@@ -62,9 +62,8 @@ document.getElementById('update-author-btn').addEventListener('click', () => {
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation) return
 
-
     // Send request to server and handle response
-    fetch(`/api/authors/${authorID.value}`, {
+    fetch(`/api/authors/update`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
     <script src="../js/script.js" defer></script>
     <script src="../js/manage_authors.js" defer></script>
     <title>LB: Manage Authors</title>
@@ -17,7 +18,7 @@
             
             <div class="form-cont">
                 <div class="form-item search" id="author-search-cont">
-                    <input type="text" name="authorSearch" id="authorSearch" placeholder="Enter an author's name" pattern="[A-Za-z'. \\-]{0,100}">
+                    <input type="text" name="authorSearch" id="authorSearch" placeholder="Search author" pattern="[A-Za-z'. \\-]{0,100}">
                     <div class="search-output" id="author-search-output"></div>
                     <div class="error"></div>
                 </div>
@@ -57,10 +58,10 @@
                         <input id="update-author-btn" type="button" value="Update Author">
                         <input id="delete-author-btn" type="button" value="Delete Author">
                     </div>
-                    <div class="form-clear">
-                        <input type="button" value="Clear Form" id="clear-form-btn">
-                    </div>
                 </form>
+                <div class="form-clear">
+                    <input type="button" value="Clear Form" id="clear-form-btn">
+                </div>
             </div>
         </section>
     </main>

@@ -74,7 +74,13 @@ router.get('/authors', (req,res) => {
     // No incoming data to sanitise. Just go query the database
     authorModel.getAllAuthors()
         .then(result => {
-            res.status(200).json(result)
+            if(result.length > 0){
+                // We have books, send response
+                res.status(200).json(result)
+            } else {
+                // No books to display
+                res.status(404).json("No authors found")
+            }
         })
         .catch(error => {
             console.log(error)
@@ -167,7 +173,7 @@ router.post('/authors/add', validateCommon, (req,res) => {
 
 // Define a route for /api/authors/update to update an author in the database
 // based on sanitised form data provided by the user
-router.patch('/authors/:id', validateCommon, validateParamAuthorId, validateBodyAuthorId, (req,res) => {
+router.patch('/authors/update', validateCommon, validateBodyAuthorId, (req,res) => {
     // Get form data from request body
     let author = req.body
     

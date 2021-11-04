@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+    <script src="../js/script.js" defer></script>
+    <script src="../js/manage_books.js" defer></script>
+    <title>LB: Manage Books</title>
+</head>
+<body>
+    <header></header>
+    <nav></nav>
+    <main>
+        <section class="main-container">
+            <h1>Manage Books</h1>
+
+            <div class="form-cont"></div>
+                <div class="form-item search">
+                    <input type="text" name="search-bar" id="search-bar" pattern="[A-Za-z]" placeholder="Search books" maxlength="50">
+                    <div class="search-output" id="book-search-output"></div>
+                    <div class="error"></div>
+                </div>
+                <form action="#" id="book-form"  enctype="multipart/form-data">
+                    <!-- Hidden input to hold book ID for update and delete operations -->
+                    <div class="form-item" id="bookID-cont">
+                        <input type="text" name="book-id" id="book-id" value="" hidden>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item">
+                        <input type="file" name="image" id="image" maxlength="1000" accept=".jpg, .jpeg, .png">
+                        <label for="image">Book Cover Image</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="title" id="title" pattern="[A-Za-z0-9]{2,50}" placeholder="Enter book title" maxlength="100" required>
+                        <label for="title">Book Title</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="original-title" id="original-title" pattern="[A-Za-z]{1,50}" placeholder="Enter original title" maxlength="50">
+                        <label for="original-title">Original Title</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item search">
+                        <input type="text" name="search-author" id="search-author" pattern="[A-Za-z]" placeholder="Enter search term..." maxlength="50" required>
+                        <label for="search-author">Search for an author</label>
+                        <div class="error"></div>
+                    </div>
+                    <!-- Hidden input to hold author ID for CRUD operations -->
+                    <div class="form-item" id="authorID-cont">
+                        <input type="text" name="author-id" id="author-id" value="" hidden>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item">
+                        <input type="number" name="year-published" id="year-published" pattern="[0-9]{4}" placeholder="Enter year of publication" minlength="4" maxlength="4" min="0" max="2021" required>
+                        <label for="year-published">Year of Publication</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item">
+                        <!-- TODO: Create as select list -->
+                        <select name="genre-select" id="genre-select" required>
+                            <option value="default">--Select book genre--</option>
+                            <option value="novel">Novel</option>
+                            <option value="historical-fiction">Historical Fiction</option>
+                            <option value="fantasy-adventure">Fantasy/Adventure</option>
+                            <option value="fantasy-fiction">Fantasy Fiction</option>
+                            <option value="mystery">Mystery</option>
+                            <option value="high-fantasy">High Fantasy</option>
+                            <option value="fiction">Fiction</option>
+                            <option value="fantasy">Fantasy</option>
+                        </select>
+                        <label for="genre-select">Genre</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item">
+                        <input type="number" name="millions-sold" id="millions-sold" pattern="[0-9]{0,5}" placeholder="Enter millions sold" maxlength="5">
+                        <label for="millions-sold">Millions of Copies Sold</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="language" id="language" pattern="[A-Za-z]{3,50}" placeholder="Enter original language" maxlength="50" required>
+                        <label for="language">Original Language</label>
+                        <div class="error"></div>
+                    </div>
+                    <div class="form-submit">
+                        <input id="add-book-btn" type="submit" value="Add">
+                        <input id="update-book-btn" type="submit" value="Update">
+                        <input id="delete-book-btn" type="submit" value="Delete">
+                    </div>
+                </form>
+                <div class="form-clear">
+                    <input type="button" value="Clear Form" id="clear-form-btn">
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer></footer>
+</body>
+</html>

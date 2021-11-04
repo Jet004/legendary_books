@@ -3,12 +3,12 @@
 const db = require('./database')
 
 module.exports.getAllBooks = () => {
-    return db.query("SELECT * FROM books")
+    return db.query("SELECT * FROM books;")
 }
 
 module.exports.getBookById = (bookID) => {
     return db.query(
-        "SELECT * FROM books WHERE bookID = ?",
+        "SELECT * FROM books WHERE bookID = ?;",
         [bookID]
     )
 }
@@ -16,29 +16,29 @@ module.exports.getBookById = (bookID) => {
 module.exports.addBook = (bookValues) => {
     return db.query(
         "INSERT INTO books(bookTitle, originalTitle, yearPublished, genre, millionsSold, originalLanguage, coverImagePath, authorID) "+
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
         [bookValues.bookTitle, bookValues.originalTitle, bookValues.yearPublished, bookValues.genre, bookValues.millionsSold, bookValues.originalLanguage, bookValues.coverImagePath, bookValues.authorID]
     )
 }
 
-module.exports.updateBooks = (bookValues) => {
+module.exports.updateBook = (bookValues) => {
     return db.query(
         "UPDATE books SET bookTitle = ?, originalTitle = ?, yearPublished = ?, genre = ?, millionsSold = ?, originalLanguage = ?, coverImagePath = ?, authorID = ? "+
-        "WHERE bookID = ?",
+        "WHERE bookID = ?;",
         [bookValues.bookTitle, bookValues.originalTitle, bookValues.yearPublished, bookValues.genre, bookValues.millionsSold, bookValues.originalLanguage, bookValues.coverImagePath, bookValues.authorID, bookValues.bookID]
     )
 }
 
 module.exports.deleteBook = (bookID) => {
     return db.query(
-        "DELETE FROM books WHERE bookID = ?",
+        "DELETE FROM books WHERE bookID = ?;",
         [bookID]
     )
 }
 
 module.exports.searchBookName = (queryString) => {
     return db.query(
-        "SELECT * FROM books WHERE bookTitle = ? OR originalTitle = ?",
+        "SELECT * FROM books WHERE bookTitle = ? OR originalTitle = ?;",
         [queryString, queryString]
     )
 }
