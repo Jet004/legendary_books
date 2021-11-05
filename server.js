@@ -1,4 +1,5 @@
 const express = require('express')
+const fileUpload = require('express-fileupload')
 
 const server = express()
 
@@ -6,6 +7,9 @@ const port = 8000
 
 server.use(express.static('frontend'))
 server.use(express.static('frontend/views'))
+
+// Enable middleware for file uploads
+server.use(fileUpload({createParentPath: true}))
 
 // Enable middleware for JSON and urlencoded form data
 server.use(express.json())

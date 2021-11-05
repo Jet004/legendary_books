@@ -70,7 +70,6 @@ const removeErrorForceDisplay = (elem) => {
     // Reset error message
     elem.setCustomValidity("");
     // Reset error message on hidden id element
-
     // Get error div and remove forced display
     let errorDiv = document.querySelector(
         "#" + elem.parentNode.getAttribute("id") + "> .error"
@@ -143,12 +142,17 @@ formElement.addEventListener('input', validateOnFormInput)
 formElement.addEventListener('change', validateOnFormInput)
 
 // Set input event listener to clear error on search input
-let searchElement = document.getElementsByClassName('search')[0]
-searchElement.addEventListener('input', (e) => {
-    // Remove id field error message
-    let idField = document.getElementsByClassName('hidden-id')[0]
-    removeErrorForceDisplay(idField)
-})
+let searchElements = document.getElementsByClassName('search')
+for(elem of searchElements){
+    elem.addEventListener('input', (e) => {
+        // Determine which search bar triggered event and build css selector
+        // for the related hidden id field
+        let target = e.target.parentNode.id.split('-')[0] + 'ID'
+        // Remove id field error message
+        let idField = document.getElementById(target)
+        removeErrorForceDisplay(idField)
+    })
+}
 
 // Set event listener to clear all form error values when search item is seleced
 let searchOutput = document.getElementsByClassName('search-output')[0]

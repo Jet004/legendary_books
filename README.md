@@ -3,8 +3,12 @@
 -- TODO
 
 bookController
+    - Sanitise user input using express-validator
+
 manage_books.html
 manage_books.js
+    - add book - still need to add validation code
+    - still need to do file upload fetch
 userModel
 userController
 manage_users.html

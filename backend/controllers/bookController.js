@@ -1,5 +1,6 @@
 // Import express so we can create routes in this file
 const express = require('express')
+const fileUpload = require('express-fileupload')
 const router = express.Router()
 
 // // Import express validation middleware
@@ -69,7 +70,53 @@ router.get('/books/:id', (req,res) => {
 
 // GET /api/books/search/:input
 router.get('/books/search/:input', (req,res) => {
-    res.json('search books')
+    // Get input data from request parameter
+    const input = req.params.input
+
+    // TODO: Sanitise input
+
+    // Query the database
+    bookModel.searchBookName(input)
+        .then(result => {
+            // Check if there are any results
+            if(result.length > 0){
+                // We have results, respond with 200
+                res.status(200).json(result)
+            } else {
+                // There were no matches, respond with 404
+                res.status(404).json('no results')
+            }
+        })
+        .catch(error => {
+            // Database returned an error, log error and respond with 500
+            console.log(error)
+            res.status(500).json("query error")
+        })
+})
+
+// POST /api/books/cover - save cover image to file system
+router.post('/books/cover', (req,res) => {
+    if(!req.files){
+        // No file, respond with 400
+        res.status(400).json("no file detected")
+    } else {
+        // Save file to file system
+        let file = req.files.file
+        file.mv('./frontend/cover-images/' + file.name, (error) => {
+            // Check if there were any file upload errors
+            if(error){
+                // There was an upload error, log error and respond with server error
+                console.log(error)
+                res.status(500).json(error)
+            } else {
+                // File upload successful, respond with 200 OK
+                res.status(200).json({
+                    "status": "success",
+                    "message": "file upload successful"
+                })
+            }
+        })
+    }
 })
 
 // POST /api/books/add - add book to db
@@ -89,7 +136,8 @@ router.post('/books/add', (req,res) => {
             })
         })
         .catch(error => {
-            // Database returned an error
+            // Database returned an error, log error and respond with 500
+            console.log(error)
             res.status(500).json("query error")
         })
 })

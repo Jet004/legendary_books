@@ -191,6 +191,7 @@ authorSearch.addEventListener('input', () => {
                     }
                     // Close the search output box
                     authorSearchOutput.style.display = 'none'
+                    authorSearch.value = author.innerHTML
                 })
             }
 
