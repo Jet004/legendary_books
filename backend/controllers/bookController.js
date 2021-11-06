@@ -150,7 +150,7 @@ router.post('/books/add', (req,res) => {
 router.patch('/books/update', (req,res) => {
     // Get form data from request body
     let book = req.body
-    
+
     // TODO: Sanitise input
 
     // If bookTitle is updated (query using bookID) then we need to rename the cover image file to
@@ -208,22 +208,52 @@ router.delete('/books/:id', (req,res) => {
 
     // TODO: Sanitise id
 
-    bookModel.deleteBook(bookID)
-        .then(result => {
-            // Check if deletion was successful
-            if(result.affectedRows > 0) {
-                // Book was deleted successfully, respond with 200
-                res.status(200).json("successfully deleted book with id: " + bookID)
+    // When we delete the book from the database we also need to delete
+    // the cover image in the file system
+    // Get file path from database
+    bookModel.getBookById(bookID)
+        .then(results => {
+            // Check that we have book data
+            if(results.length > 0) {
+                // We have book data, set to variable
+                let dbBookData = results[0]
+                // Check if cover image file exists
+                if(fs.existsSync(dbBookData.coverImagePath)){
+                    // Delete cover image from file system
+                    fs.rmSync(dbBookData.coverImagePath)
+                }
+
+                // Move on to delete database data
+                // Run query to delete book from database
+                bookModel.deleteBook(bookID)
+                .then(result => {
+                    // Check if deletion was successful
+                    if(result.affectedRows > 0) {
+                        // Book was deleted successfully, respond with 200
+                        res.status(200).json("successfully deleted book with id: " + bookID)
+                    } else {
+                        // No book found with the given id, respond with bad request
+                        res.status(400).json("failed to delete book - no book with id: " + bookID)
+                    }
+                })
+                .catch(error => {
+                    // Database returned an error, log error and respond with server error
+                    console.log(error)
+                    res.status(500).json("query error")
+                })
             } else {
-                // No book found with the given id, respond with bad request
-                res.status(400).json("failed to delete book - no book with id: " + bookID)
+                // No results, respond with 404
+                res.status(404).json("book not found")
             }
         })
         .catch(error => {
-            // Database returned an error, log error and respond with server error
+            // Database returned and error, log error and respond with server error
             console.log(error)
             res.status(500).json("query error")
         })
+
+
+    
 })
 
 module.exports = router

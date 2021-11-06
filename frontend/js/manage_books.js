@@ -193,25 +193,25 @@ document.getElementById('delete-book-btn').addEventListener('click', () => {
         }
         return true
     }
-    // return if form data doen't pass validation to prevent fetch request from running
+    // Return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation()) return
     
     // Ask for confirmation that user actually wants to delete the book
     const confirmed = confirm("Are you sure you want to delete this book?")
 
     // Only send request if user has confirmed the deletion
-    if(confirmed){
-        // Send request to server and handle response
-        fetch(`/api/books/${bookID.value}`,{
-            method: 'DELETE'
+    if(!confirmed) return  
+
+    // Send request to server and handle response
+    fetch(`/api/books/${bookID.value}`,{
+        method: 'DELETE'
+    })
+        .then(response => response.json())
+        .then(data => {
+            clearSearchOutput()
+            clearFormFields()
+            alert(data)
         })
-            .then(response => response.json())
-            .then(data => {
-                clearSearchOutput()
-                clearFormFields()
-                alert(data)
-            })
-    }
 })
 
 //----------------------------- END Delete Book -----------------------------//
@@ -443,6 +443,7 @@ const clearFormFields = () => {
     // Clear values from each element except buttons
     for(elem of formElements){
         if(elem.getAttribute('type') !== 'button'){
+            if(elem.id == 'genre') elem.value = 'default'
             elem.value = ''
         }
     }
