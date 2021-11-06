@@ -23,7 +23,7 @@ module.exports.addBook = (bookValues) => {
 
 module.exports.updateBook = (bookValues) => {
     return db.query(
-        "UPDATE books SET bookTitle = ?, originalTitle = ?, yearPublished = ?, genre = ?, millionsSold = ?, originalLanguage = ?, coverImagePath = ?, authorID = ? "+
+        "UPDATE books SET bookTitle = ?, originalTitle = ?, yearPublished = ?, genre = ?, millionsSold = ?, originalLanguage = ?, coverImagePath = ?, authorID = ? " +
         "WHERE bookID = ?;",
         [bookValues.bookTitle, bookValues.originalTitle, bookValues.yearPublished, bookValues.genre, bookValues.millionsSold, bookValues.originalLanguage, bookValues.coverImagePath, bookValues.authorID, bookValues.bookID]
     )
@@ -37,8 +37,9 @@ module.exports.deleteBook = (bookID) => {
 }
 
 module.exports.searchBookName = (queryString) => {
+    queryString = `%${queryString}%`
     return db.query(
-        "SELECT * FROM books WHERE bookTitle = ? OR originalTitle = ?;",
-        [queryString, queryString]
+        "SELECT * FROM books WHERE bookTitle LIKE ?",
+        [queryString]
     )
 }

@@ -1,6 +1,8 @@
 // Import express so we can create routes in this file
 const express = require('express')
 const fileUpload = require('express-fileupload')
+const fs = require('fs')
+
 const router = express.Router()
 
 // // Import express validation middleware
@@ -8,6 +10,8 @@ const { param, body, validationResult } = require('express-validator')
 
 // Import book model so I can query the database from this file
 const bookModel = require('../models/bookModel')
+// Import bookAuthor model so I can search for books with author data included
+const bookAuthorModel = require('../models/bookAuthorModel')
 
 //--------------------- Define Validation Criteria ---------------------//
 
@@ -72,11 +76,11 @@ router.get('/books/:id', (req,res) => {
 router.get('/books/search/:input', (req,res) => {
     // Get input data from request parameter
     const input = req.params.input
-
+    
     // TODO: Sanitise input
 
     // Query the database
-    bookModel.searchBookName(input)
+    bookAuthorModel.searchBooksWithAuthors(input)
         .then(result => {
             // Check if there are any results
             if(result.length > 0){
@@ -146,10 +150,40 @@ router.post('/books/add', (req,res) => {
 router.patch('/books/update', (req,res) => {
     // Get form data from request body
     let book = req.body
+    
+    // TODO: Sanitise input
 
-    // TODO: Sanite input
+    // If bookTitle is updated (query using bookID) then we need to rename the cover image file to
+    // reflect the new book title using fs module
+    // Get existing book details
+    let bookDetailsBeforeUpdate = {}
+    // Query the database for existing details
+    bookModel.getBookById(book.bookID)
+        .then(results => {
+            // Check if there are any results
+            if(results.length > 0){
+                // We have our book, save details to variable
+                bookDetailsBeforeUpdate = results[0]
+                // Check if the bookTitle has been updated
+                if(book.bookTitle != bookDetailsBeforeUpdate.bookTitle){
+                    // Book title has been updated. Update the cover image filename to reflect this
+                    let oldFilePath = bookDetailsBeforeUpdate.coverImagePath
+                    let newFilePath = book.coverImagePath
+                    fs.renameSync(oldFilePath, newFilePath)
+                }
+                // Book title has not been updated, pass through to database update
+            } else {
+                // Couldn't find book, respond with not found
+                res.status(404).json("book not found")
+            }
+        })
+        .catch(error => {
+            // Database returned an error, log the error then respond with server error
+            console.log(error)
+            res.status(500).json("query error")
+        })
 
-    // Query the database
+    // Update book details in the database
     bookModel.updateBook(book)
         .then(result => {
             // Check if update was successful

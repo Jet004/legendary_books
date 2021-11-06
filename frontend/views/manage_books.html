@@ -18,7 +18,7 @@
 
             <div class="form-cont" enctype="multipart/form-data" novalidate></div>
                 <div class="form-item search" id="book-search-cont">
-                    <input type="text" name="bookSearch" id="bookSearch" pattern="[\w\n '\\-]{0,100}" placeholder="Search books" maxlength="50">
+                    <input type="text" name="bookSearch" id="bookSearch" pattern="[A-Za-z'.,: \\-]{0,100}" placeholder="Search books" maxlength="50">
                     <div class="search-output" id="book-search-output"></div>
                     <div class="error"></div>
                 </div>
@@ -34,12 +34,12 @@
                         <div class="error"></div>
                     </div>
                     <div class="form-item" id="bookTitle">
-                        <input type="text" name="bookTitle" id="bookTitle" pattern="[\w\d ]{2,100}" placeholder="Enter book title" maxlength="100" required>
+                        <input type="text" name="bookTitle" id="bookTitle" pattern="[\w\d ,:']{2,100}" placeholder="Enter book title" maxlength="100" required>
                         <label for="title">Book Title</label>
                         <div class="error"></div>
                     </div>
                     <div class="form-item" id="original-title-cont">
-                        <input type="text" name="originalTitle" id="originalTitle" pattern="[\w\d ]{1,100}" placeholder="Enter original title" maxlength="50">
+                        <input type="text" name="originalTitle" id="originalTitle" pattern="[\w\d ,:']{1,100}" placeholder="Enter original title" maxlength="50">
                         <label for="original-title">Original Title</label>
                         <div class="error"></div>
                     </div>

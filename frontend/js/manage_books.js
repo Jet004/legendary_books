@@ -24,7 +24,7 @@ document.getElementById('add-book-btn').addEventListener('click', () => {
     let formObject = Object.fromEntries(new FormData(form))
     // Set filename for file to be saved in server
     let extension = `.${formObject.coverImagePath.type.split('/')[1]}`
-    let filename = formObject.bookTitle.replace(' ', '') + extension
+    let filename = formObject.bookTitle.replaceAll(' ', '') + extension
     // Set coverImage path to be added to database - file name taken from book name,
     // file extension taken from file object's type property
     formObject.coverImagePath = `frontend/cover-images/${filename}`
@@ -66,12 +66,14 @@ document.getElementById('add-book-btn').addEventListener('click', () => {
                     }
                     return res.json()
                 })
-                .then(data => {
-                    console.log(data)
+                .then(fileResponseData => {
                     // Update bookID form field to prevent user updating incorrect book
                     document.getElementById('bookID').value = data.bookID
                     clearSearchOutput()
-                    alert(data.message)
+                    // Clear file input to prevent uploading the wrong image when updating
+                    let fileElement = document.getElementById('coverImagePath')
+                    fileElement.value = ""
+                    alert(data.status)
                 })
                 .catch(error => console.log(error))
         })
@@ -84,12 +86,29 @@ document.getElementById('add-book-btn').addEventListener('click', () => {
 
 // Set event listener on update book button
 document.getElementById('update-book-btn').addEventListener('click', () => {
-    // Get form element and convert data to JSON
+    // Get form element and convert data to JSON object
     const form = document.getElementById('book-form')
-    const formDataJSON = JSON.stringify(Object.fromEntries(new FormData(form)))
+    const formObject = Object.fromEntries(new FormData(form))
     
     // Get book id from hidden element to pass in request URI
     const bookID = form['bookID']
+
+    // Check if a new cover image has been supplied
+    let newCoverImage = form['coverImagePath']
+    if(!newCoverImage.value){
+        // No new cover image, set image path to empty string
+        formObject.coverImagePath = ''
+    } else {
+        // Set filename for file to be saved in server
+        let extension = `.${formObject.coverImagePath.type.split('/')[1]}`
+        let filename = formObject.bookTitle.replaceAll(' ', '') + extension
+        // Set coverImage path to be added to database - file name taken from book name,
+        // file extension taken from file object's type property
+        formObject.coverImagePath = `frontend/cover-images/${filename}`
+    }
+
+    // Convert the form data object to a JSON string
+    const formDataJSON = JSON.stringify(formObject)
 
     // Validate form data with extra requirements
     let formPassedValidation = validateFormOnSubmit(() => {
@@ -99,7 +118,7 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
         }
         return true
     })
-    // return if form data doen't pass validation to prevent fetch request from running
+    // Return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation) return
 
     // Send request to server and handle response
@@ -110,10 +129,49 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
         },
         body: formDataJSON
     })
-        .then(res => res.json())
+        .then(res => {
+            if(!res.ok){
+                // Database update failed, prevent file upload
+                return Promise.reject(res.json())
+            }
+
+            // Database update ok, proceed to file upload if file supplied
+            return res.json()
+        })
         .then(data => {
+            // Only run fetch to upload file if there is a file to upload
+            if(formObject.coverImagePath){
+                // Create new form data
+                const formData = new FormData()
+                // Get file element
+                const coverImage = document.getElementById('coverImagePath').files[0]
+                console.log(coverImage)
+                // Add file and data to formData
+                formData.append('file', coverImage, formObject.coverImagePath)
+                
+                // Send image to server to be saved in file system
+                fetch('/api/books/cover', {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(res => {
+                        if(!res.ok){
+                            return Promise.reject(res.json())
+                        }
+                        return res.json()
+                    })
+                    .then(fileResponseData => {
+                        
+                    })
+                    .catch(error => console.log(error))
+            }
+
+            // Run this code whether or not a new cover image is uploaded
             clearSearchOutput()
             alert(data)
+        })
+        .catch(error => {
+            console.log(error)
         })
 })
 
@@ -177,7 +235,7 @@ bookSearch.addEventListener('input', () => {
     let formPassedValidation = () => {
         removeErrorForceDisplay(bookSearch)
         if(!bookSearch.checkValidity()){
-            // Check to see if input data conforms to the pattern for a name
+            // Check to see if input data conforms to the pattern for a book title
             console.log(bookSearch.checkValidity())
             validityCheckFailed(bookSearch, true)
             return false
@@ -211,12 +269,13 @@ bookSearch.addEventListener('input', () => {
 
             // Populate the search output box
             for(let row of data){
-                bookSearchOutput.innerHTML += `<div class="output-row" id="${row.bookID}">${row.title}</div>`
+                bookSearchOutput.innerHTML += `<div class="output-row" id="${row.bookID}">${row.bookTitle}</div>`
             }
 
             // Set event handlers on result rows to populate form with book data when clicked
             // Get all result rows
             let books = document.querySelectorAll('#book-search-output > .output-row')
+            
             for(let book of books){
                 book.addEventListener('click', () => {
                     // Get the data for the selected book
@@ -225,8 +284,14 @@ bookSearch.addEventListener('input', () => {
                     let formElements = document.getElementsByTagName('form')[0].elements
                     // Populate the form with the book's data
                     for(let elem of formElements){
-                        if(elem.name){
-                            elem.value = dataToPopulate[elem.name]
+                        // Fill form with selected book/author data
+                        if(elem.name && elem.name != 'coverImagePath'){
+                            // Enter author name into author search field
+                            if(elem.name == 'authorSearch'){
+                                elem.value = dataToPopulate.authorName
+                            } else {
+                                elem.value = dataToPopulate[elem.name]
+                            }
                         }
                     }
                     // Close the search output box
