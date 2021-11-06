@@ -2,17 +2,18 @@
 
 -- TODO
 
-- Escape all input
--- update books author of She...
+- upload cover images of the actual books rather than random cupcakes
 
 bookController
     - Sanitise user input using express-validator
+    - validate file using express fileupload
 
-manage_books.html
 manage_books.js
-    - add book - still need to add validation code (need to validate that cover image is valid and exists)
     - add book file upload response message
-    - Check that filename replaceAll() is working
+
+script.js
+    - add error messages for manage books
+
 userModel
 userController
 manage_users.html
@@ -30,6 +31,7 @@ style.css
 bookModel
 
 -- COMPLETE
+manage_books.html
 manage_authors.js
 manage_authors.html
 authorController

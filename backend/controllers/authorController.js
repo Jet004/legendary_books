@@ -13,32 +13,40 @@ const authorModel = require('../models/authorModel')
 //--------------------- Define Validation Criteria ---------------------//
 
 // Set out validation criteria common to add/update author
+// Sanitise all fields which will conceivably be displayed in future
+// using trim to remove leading and trailing white space and escape
+// to convert executable code into a safe form
 const validateCommon = [
     // firstName must match: [A-Za-z'. \\-]{2,100} and not be empty
     body('firstName').exists(checkFalsy = true).withMessage("Exists")
         .matches("[A-Za-z'. \\-]").withMessage("Pattern")
         .isLength({min:2, max:100}).withMessage("Length")
-        .trim(),
+        .trim()
+        .escape(),
     // lastName must match: [A-Za-z'. \\-]{2,100} and not be empty
     body('lastName').exists(checkFalsy = true).withMessage("Exists")
         .matches("[A-Za-z'. \\-]").withMessage("Pattern")
         .isLength({min:2, max:100}).withMessage("Length")
-        .trim(),
+        .trim()
+        .escape(),
     // nationality must not be empty and must match: [A-Za-z]{2,100}
     body('nationality').exists(checkFalsy = true).withMessage("Exists")
         .matches("[A-Za-z]").withMessage("Pattern")
         .isLength({min:2, max:100}).withMessage("Length")
-        .trim(),
+        .trim()
+        .escape(),
     // birthYear is INT, not empty, and 1 - 4 characters long
     body('birthYear').exists(checkFalsy = true).withMessage("Exists")
         .isInt().withMessage("Type: INT")
         .isLength({min:1, max:4}).withMessage("Length")
-        .trim(),
+        .trim()
+        .escape(),
     // deathYear is either an empty string or convertable to a number, and 0 - 4 characters long
     body('deathYear').exists().withMessage("Exists")
         .isLength({min:0, max:4}).withMessage("Length")
         .custom(value => value === '' || typeof Number(value) === 'number').withMessage("Custom: <empty string> || INT")
         .trim()
+        .escape()
 ]
 
 // Set out validation criteria for user id in req.params
@@ -47,6 +55,7 @@ const validateParamAuthorId = [
     param('id').exists(checkFalsy = true).withMessage("Exists")
         .isInt().withMessage("Type: INT")
         .trim()
+        .escape()
 ]
 
 // Set out validation criteria for user id in body
@@ -55,6 +64,7 @@ const validateBodyAuthorId = [
     body('authorID').exists(checkFalsy = true).withMessage("Exists")
         .isInt().withMessage("Type: INT")
         .trim()
+        .escape()
 ]
 
 // Set out validation criteria for author name search
@@ -64,6 +74,7 @@ const validateSearchAuthorName = [
         .matches("[A-Za-z',\\- ]").withMessage("Pattern")
         .isLength({min:0, max:100}).withMessage("Length")
         .trim()
+        .escape()
 ]
 
 

@@ -18,7 +18,7 @@
 
             <div class="form-cont" enctype="multipart/form-data" novalidate></div>
                 <div class="form-item search" id="book-search-cont">
-                    <input type="text" name="bookSearch" id="bookSearch" pattern="[A-Za-z'.,: \\-]{0,100}" placeholder="Search books" maxlength="50">
+                    <input type="text" name="bookSearch" id="bookSearch" pattern="[A-Za-z'.,: \\-]{0,100}" placeholder="Search for a book to update or delete" maxlength="50">
                     <div class="search-output" id="book-search-output"></div>
                     <div class="error"></div>
                 </div>
@@ -39,7 +39,7 @@
                         <div class="error"></div>
                     </div>
                     <div class="form-item" id="original-title-cont">
-                        <input type="text" name="originalTitle" id="originalTitle" pattern="[\w\d ,:']{1,100}" placeholder="Enter original title" maxlength="50">
+                        <input type="text" name="originalTitle" id="originalTitle" pattern="[\w\d ,:']{1,100}" placeholder="Enter original title" maxlength="50" required>
                         <label for="original-title">Original Title</label>
                         <div class="error"></div>
                     </div>
@@ -51,7 +51,7 @@
                     </div>
                     <!-- Hidden input to hold author ID for CRUD operations -->
                     <div class="form-item" id="authorID-cont">
-                        <input type="text" name="authorID" id="authorID" value="" pattern="[0-9]{0,10}" hidden>
+                        <input type="text" name="authorID" id="authorID" value="" pattern="[0-9]{0,10}" hidden required>
                         <div class="error"></div>
                     </div>
                     <div class="form-item" id="year-published-cont">
@@ -76,7 +76,7 @@
                         <div class="error"></div>
                     </div>
                     <div class="form-item" id="millions-sold-cont">
-                        <input type="text" name="millionsSold" id="millionsSold" pattern="[0-9]{1,5}" placeholder="Enter millions sold" maxlength="5">
+                        <input type="text" name="millionsSold" id="millionsSold" pattern="[0-9]{1,5}" placeholder="Enter millions sold" maxlength="5" required>
                         <label for="millions-sold">Millions of Copies Sold</label>
                         <div class="error"></div>
                     </div>

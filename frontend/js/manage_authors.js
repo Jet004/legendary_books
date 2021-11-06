@@ -135,10 +135,11 @@ authorSearch.addEventListener('input', () => {
 
     // Validate search input data
     let formPassedValidation = () => {
+        // Remove any forced error display
         removeErrorForceDisplay(authorSearch)
+        // Check to see if input data conforms to the pattern for a name
         if(!authorSearch.checkValidity()){
-            // Check to see if input data conforms to the pattern for a name
-            console.log(authorSearch.checkValidity())
+            // Validity check failed, stop search and display error message
             validityCheckFailed(authorSearch, true)
             return false
         } else if(!authorSearch.value){

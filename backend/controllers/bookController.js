@@ -15,13 +15,109 @@ const bookAuthorModel = require('../models/bookAuthorModel')
 
 //--------------------- Define Validation Criteria ---------------------//
 
+// Set out validation criteria for fields common to add/update book
+// Sanitise all fields which will conceivably be displayed in future
+// using trim to remove leading and trailing white space and escape
+// to convert executable code into a safe form
+const validateCommon = [
+    // bookTitle
+    body('bookTitle').exists(checkFalsy = true).withMessage("Exists")
+        .matches("[A-Za-z0-9 ,:']").withMessage("Pattern")
+        .isLength({min:2, max:100}).withMessage("Length")
+        .trim()
+        .escape(),
+    // originalTitle
+    body('originalTitle').exists(checkFalsy = true).withMessage("Exists")
+        .matches("[A-Za-z0-9 ,:']").withMessage("Pattern")
+        .isLength({min:1, max:100}).withMessage("Length")
+        .trim()
+        .escape(),
+    // authorID
+    body('authorID').exists(checkFalsy = true).withMessage("Exists")
+        .isInt().withMessage("Type: INT")
+        .isLength({min:1, max:10}).withMessage("Length")
+        .trim()
+        .escape(),
+    // yearPublished
+    body('yearPublished').exists(checkFalsy = true).withMessage("Exists")
+        .isLength({min:1, max:4}).withMessage("Length")
+        .isInt()
+        .trim()
+        .escape(),
+    // genre
+    body('genre').exists(checkFalsy = true).withMessage("Exists")
+        .isIn([
+            "novel",
+            "historical-fiction",
+            "fantasy-adventure",
+            "fantasy-fiction",
+            "mystery",
+            "high-fantasy",
+            "fiction",
+            "fantasy"
+        ]).withMessage("In List")
+        .trim()
+        .escape(),
+    // millionsSold
+    body('millionsSold').exists().withMessage("Exists")
+        .isInt().withMessage("Type: INT")
+        .isLength({min: 1, max: 5}).withMessage("Length")
+        .trim()
+        .escape(),
+    // originalLanguage
+    body('originalLanguage').exists(checkFalsy = true).withMessage("Exists")
+        .isAlpha().withMessage("Type: ALPHA")
+        .isLength({min: 3, max: 50}).withMessage("Length")
+        .trim()
+        .escape()
+]
 
+// Set out validation criteria specific to add book
+const validateAddBook = [
+    // coverImagePath
+    body('coverImagePath').exists(checkFalsy = true).withMessage("Exists")
+        .matches("frontend/cover-images/[0-9]{2,100}.[jpg|jpeg|png]").withMessage("Pattern")
+        .isLength({min:2, max:150}).withMessage("Length")
+        .trim(),
+]
 
+// Set out validation criteria specific to update book
+const validateUpdateBook = [
+    // coverImagePath
+    body('coverImagePath').exists(checkFalsy = true).withMessage("Exists")
+        .if(value => value !== "").withMessage("Condition")
+        .matches("frontend/cover-images/[0-9]{2,100}.[jpg|jpeg|png]").withMessage("Pattern")
+        .isLength({min:2, max:150}).withMessage("Length")
+        .trim(),
+]
 
+// Set out validation criteria for user id in req.params
+const validateParamBookId = [
+    // Sanitise id parameter - only accept numbers
+    param('id').exists(checkFalsy = true).withMessage("Exists")
+        .isInt().withMessage("Type: INT")
+        .trim()
+        .escape()
+]
 
+// Set out validation criteria for user id in body
+const validateBodyBookId = [
+    // Sanitise id parameter - only accept numbers
+    body('authorID').exists(checkFalsy = true).withMessage("Exists")
+        .isInt().withMessage("Type: INT")
+        .trim()
+        .escape()
+]
 
-
-
+// Set out validation criteria for book title search
+const validateSearchBookTitle = [
+    // Sanitise user input - only accept [A-Za-z'.- ]
+    param('input').exists(checkFalsy = true).withMessage("Exists")
+        .matches("[A-Za-z',\\- ]").withMessage("Pattern")
+        .isLength({min:0, max:100}).withMessage("Length")
+        .trim()
+        .escape()
+]
 
 
 //--------------------- Define Routes ---------------------//
@@ -48,10 +144,15 @@ router.get('/books', (req,res) => {
 })
 
 // GET /api/books/:id - get book by id
-router.get('/books/:id', (req,res) => {
+router.get('/books/:id', validateParamBookId, (req,res) => {
     const bookID = req.params.id
 
-    // TODO: Sanitise input
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There is a validation error - respond with bad request
+        return res.status(400).json({ error: error.array()})
+    }
 
     // Query the database
     bookModel.getBookById(bookID)
@@ -73,11 +174,16 @@ router.get('/books/:id', (req,res) => {
 })
 
 // GET /api/books/search/:input
-router.get('/books/search/:input', (req,res) => {
+router.get('/books/search/:input', validateSearchBookTitle, (req,res) => {
     // Get input data from request parameter
     const input = req.params.input
     
-    // TODO: Sanitise input
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There is a validation error, respond with bad request
+        return res.status(400).json({error: error.array()})
+    }
 
     // Query the database
     bookAuthorModel.searchBooksWithAuthors(input)
@@ -100,12 +206,24 @@ router.get('/books/search/:input', (req,res) => {
 
 // POST /api/books/cover - save cover image to file system
 router.post('/books/cover', (req,res) => {
+    // Check if a file has actually been received
     if(!req.files){
         // No file, respond with 400
         res.status(400).json("no file detected")
     } else {
-        // Save file to file system
+        // Get file data
         let file = req.files.file
+        
+        // Check file type
+        let fileExtension = file.name.split('.')[1]
+        const allowedExtensions = ["png", "jpg", "jpeg"]
+
+        if(!allowedExtensions.includes(fileExtension)){
+            // Wrong file type, respond with bad request
+            return res.status(400).json({error: "invalid file type"})
+        }
+
+        // Save file to file system
         file.mv('./frontend/cover-images/' + file.name, (error) => {
             // Check if there were any file upload errors
             if(error){
@@ -124,11 +242,16 @@ router.post('/books/cover', (req,res) => {
 })
 
 // POST /api/books/add - add book to db
-router.post('/books/add', (req,res) => {
+router.post('/books/add', validateCommon, validateAddBook, (req,res) => {
     // Get form data from request body
     let book = req.body
-    
-    // TODO: Sanitise input
+
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There is a validation error, respond with bad request
+        return res.status(400).json({error: error.array()})
+    }
     
     // run add book query from book model
     bookModel.addBook(book)
@@ -147,14 +270,21 @@ router.post('/books/add', (req,res) => {
 })
 
 // PATCH /api/books/:id update book
-router.patch('/books/update', (req,res) => {
+router.patch('/books/update', validateCommon, validateUpdateBook, validateBodyBookId, (req,res) => {
     // Get form data from request body
     let book = req.body
 
-    // TODO: Sanitise input
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There was a validartion error, respond with bad request
+        return res.status(400).json({error: error.array()})
+    }
 
-    // If bookTitle is updated (query using bookID) then we need to rename the cover image file to
-    // reflect the new book title using fs module
+    // If no new file - set req. coverImagePath to path in db
+    // If new file - check that new file type === old file type (db coverImagePath)
+
+    // Delete the existing cover image file if the extension of the new file is different
     // Get existing book details
     let bookDetailsBeforeUpdate = {}
     // Query the database for existing details
@@ -164,14 +294,42 @@ router.patch('/books/update', (req,res) => {
             if(results.length > 0){
                 // We have our book, save details to variable
                 bookDetailsBeforeUpdate = results[0]
-                // Check if the bookTitle has been updated
-                if(book.bookTitle != bookDetailsBeforeUpdate.bookTitle){
-                    // Book title has been updated. Update the cover image filename to reflect this
-                    let oldFilePath = bookDetailsBeforeUpdate.coverImagePath
-                    let newFilePath = book.coverImagePath
-                    fs.renameSync(oldFilePath, newFilePath)
+
+                // Get the old and new file paths
+                let oldFilePath = bookDetailsBeforeUpdate.coverImagePath
+                let newFilePath = book.coverImagePath
+
+                // Check if there is a new file to be saved
+                if(newFilePath){
+                    // There is a new file, check that the old file still exists
+                    if(fs.existsSync(oldFilePath)){
+                        // Delete the existing file
+                        fs.rmSync(oldFilePath)
+                    }
+                } else {
+                    // No new file, set new file path to old file path to prevent
+                    // deleting the old path on update book with no new file
+                    book.coverImagePath = oldFilePath
                 }
-                // Book title has not been updated, pass through to database update
+
+                // Update book details in the database
+                bookModel.updateBook(book)
+                    .then(result => {
+                        // Check if update was successful
+                        if(result.affectedRows > 0){
+                            // Update successful, respond with 200
+                            res.status(200).json("sucessfully updated book with id: " + book.bookID)
+                        } else {
+                            // Update failed, respond with 400
+                            res.status(400).json("could not update book - no book with id: " + book.bookID)
+                        }
+                    })
+                    .catch(error => {
+                        // Database returned an error, log error and respond with server error
+                        console.log(error)
+                        res.status(500).json("query error")
+                    })
+
             } else {
                 // Couldn't find book, respond with not found
                 res.status(404).json("book not found")
@@ -182,31 +340,18 @@ router.patch('/books/update', (req,res) => {
             console.log(error)
             res.status(500).json("query error")
         })
-
-    // Update book details in the database
-    bookModel.updateBook(book)
-        .then(result => {
-            // Check if update was successful
-            if(result.affectedRows > 0){
-                // Update successful, respond with 200
-                res.status(200).json("sucessfully updated book with id: " + book.bookID)
-            } else {
-                // Update failed, respond with 400
-                res.status(400).json("could not update book - no book with id: " + book.bookID)
-            }
-        })
-        .catch(error => {
-            // Database returned an error, log error and respond with server error
-            console.log(error)
-            res.status(500).json("query error")
-        })
 })
 
 // DELETE /api/books/:id
-router.delete('/books/:id', (req,res) => {
+router.delete('/books/:id', validateParamBookId, (req,res) => {
     const bookID = req.params.id
 
-    // TODO: Sanitise id
+    // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There was a validation error, respond with bad request
+        return res.status(400).json({error: error.array()})
+    }
 
     // When we delete the book from the database we also need to delete
     // the cover image in the file system
@@ -250,10 +395,7 @@ router.delete('/books/:id', (req,res) => {
             // Database returned and error, log error and respond with server error
             console.log(error)
             res.status(500).json("query error")
-        })
-
-
-    
+        })    
 })
 
 module.exports = router

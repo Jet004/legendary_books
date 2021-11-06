@@ -16,7 +16,19 @@ document.getElementById('add-book-btn').addEventListener('click', () => {
     const form = document.getElementById('book-form')
 
     // Validate form data
-    let formPassedValidation = validateFormOnSubmit()
+    let formPassedValidation = validateFormOnSubmit(() => {
+        // coverImagePath must contain a file
+        if(form.coverImagePath.files.length <= 0){
+            validityCheckFailed(form.coverImagePath, true)
+            return false   
+        }
+        // The book genre select should not be set to 'default'
+        if(form.genre.value === 'default'){
+            validityCheckFailed(form.genre, true)
+            return false
+        }
+        return true
+    })
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation) return
 
@@ -24,8 +36,8 @@ document.getElementById('add-book-btn').addEventListener('click', () => {
     let formObject = Object.fromEntries(new FormData(form))
     // Set filename for file to be saved in server
     let extension = `.${formObject.coverImagePath.type.split('/')[1]}`
-    let filename = formObject.bookTitle.replaceAll(' ', '') + extension
-    // Set coverImage path to be added to database - file name taken from book name,
+    let filename = Date.now() + extension
+    // Set coverImage path to be added to database - file name is current timestamp,
     // file extension taken from file object's type property
     formObject.coverImagePath = `frontend/cover-images/${filename}`
     // Convert the form data object to a JSON string
@@ -43,7 +55,7 @@ document.getElementById('add-book-btn').addEventListener('click', () => {
             if(res.status == 200){
                 return res.json()
             } else {
-                return Promise.reject("Failed to add book to the database")
+                return Promise.reject(res.json())
             }
         })
         .then(data => {
@@ -62,7 +74,7 @@ document.getElementById('add-book-btn').addEventListener('click', () => {
             })
                 .then(res => {
                     if(!res.ok){
-                        return Promise.reject("Failed to save image to file system")
+                        return Promise.reject(res.json())
                     }
                     return res.json()
                 })
@@ -101,8 +113,8 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
     } else {
         // Set filename for file to be saved in server
         let extension = `.${formObject.coverImagePath.type.split('/')[1]}`
-        let filename = formObject.bookTitle.replaceAll(' ', '') + extension
-        // Set coverImage path to be added to database - file name taken from book name,
+        let filename = Date.now() + extension
+        // Set coverImage path to be added to database - file name is current timestamp,
         // file extension taken from file object's type property
         formObject.coverImagePath = `frontend/cover-images/${filename}`
     }
@@ -112,14 +124,24 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
 
     // Validate form data with extra requirements
     let formPassedValidation = validateFormOnSubmit(() => {
+        // bookID must be present from searching for a book
         if(!bookID.value){
             validityCheckFailed(bookID, true)
             return false
         }
+
+        // The book genre select should not be set to 'default'
+        if(form.genre.value === 'default'){
+            validityCheckFailed(form.genre, true)
+            return false
+        }
+
         return true
     })
+
     // Return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation) return
+
 
     // Send request to server and handle response
     fetch(`/api/books/update`, {
@@ -145,7 +167,6 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
                 const formData = new FormData()
                 // Get file element
                 const coverImage = document.getElementById('coverImagePath').files[0]
-                console.log(coverImage)
                 // Add file and data to formData
                 formData.append('file', coverImage, formObject.coverImagePath)
                 
@@ -160,15 +181,20 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
                         }
                         return res.json()
                     })
-                    .then(fileResponseData => {
-                        
+                    .then(fileResponse => {
+                        // Alert that book updated successfully
+                        alert(data)
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        console.log(error)
+                        alert(data + " " + "but there was an error updating the cover image")
+                    })
+            } else {
+                // Alert that book updated successfully
+                alert(data)
             }
-
-            // Run this code whether or not a new cover image is uploaded
+            // Clear search output regardless of result
             clearSearchOutput()
-            alert(data)
         })
         .catch(error => {
             console.log(error)
@@ -233,10 +259,11 @@ bookSearch.addEventListener('input', () => {
 
     // Validate search input data
     let formPassedValidation = () => {
+        // Remove any forced error display
         removeErrorForceDisplay(bookSearch)
+        // Check to see if input data conforms to the pattern for a book title
         if(!bookSearch.checkValidity()){
-            // Check to see if input data conforms to the pattern for a book title
-            console.log(bookSearch.checkValidity())
+            // Validity check failed, stop search and display error
             validityCheckFailed(bookSearch, true)
             return false
         } else if(!bookSearch.value){
@@ -347,10 +374,11 @@ authorSearch.addEventListener('input', () => {
 
     // Validate search input data
     let formPassedValidation = () => {
+        // Remove any forced error display
         removeErrorForceDisplay(authorSearch)
+        // Check to see if input data conforms to the pattern for a name
         if(!authorSearch.checkValidity()){
-            // Check to see if input data conforms to the pattern for a name
-            console.log(authorSearch.checkValidity())
+            // Validity check failed, stop search and display error message
             validityCheckFailed(authorSearch, true)
             return false
         } else if(!authorSearch.value){
@@ -443,8 +471,11 @@ const clearFormFields = () => {
     // Clear values from each element except buttons
     for(elem of formElements){
         if(elem.getAttribute('type') !== 'button'){
-            if(elem.id == 'genre') elem.value = 'default'
-            elem.value = ''
+            if(elem.id == 'genre'){
+                elem.value = 'default'
+            } else {
+                elem.value = ''
+            }
         }
     }
 

@@ -104,11 +104,6 @@ main {
     order: -1;
 }
 
-.form-item > input:required ~ label::after {
-    content: "*";
-    color: red;
-}
-
 .search {
     display: flex;
     flex-direction: column;
