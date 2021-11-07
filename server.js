@@ -21,6 +21,9 @@ server.use('/api', authorController)
 // Import book routes and add to api
 const bookController = require('./backend/controllers/bookController')
 server.use('/api', bookController)
+// Import user routes and add to api
+const userController = require('./backend/controllers/userController')
+server.use('/api', userController)
 
 
 // Start server

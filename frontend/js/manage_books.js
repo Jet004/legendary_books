@@ -1,11 +1,11 @@
 // Clear search output
 const clearSearchOutput = () => {
     // Get the search output element
-    let authorSearchOutput = document.getElementsByClassName('search-output')[0]
+    let bookSearchOutput = document.getElementsByClassName('search-output')[0]
     // Clear the existing output values
-    authorSearchOutput.innerHTML = ''
+    bookSearchOutput.innerHTML = ''
     // Reset display settings
-    authorSearchOutput.style.display = 'block'
+    bookSearchOutput.style.display = 'block'
 }
 
 //----------------------------- START Add Book -----------------------------//

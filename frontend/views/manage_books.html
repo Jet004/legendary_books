@@ -16,84 +16,82 @@
         <section class="main-container">
             <h1>Manage Books</h1>
 
-            <div class="form-cont" enctype="multipart/form-data" novalidate></div>
-                <div class="form-item search" id="book-search-cont">
-                    <input type="text" name="bookSearch" id="bookSearch" pattern="[A-Za-z'.,: \\-]{0,100}" placeholder="Search for a book to update or delete" maxlength="50">
-                    <div class="search-output" id="book-search-output"></div>
+            <div class="form-item search" id="book-search-cont">
+                <input type="text" name="bookSearch" id="bookSearch" pattern="[A-Za-z'.,: \\-]{0,100}" placeholder="Search for a book to update or delete" maxlength="50">
+                <div class="search-output" id="book-search-output"></div>
+                <div class="error"></div>
+            </div>
+            <form action="#" id="book-form"  enctype="multipart/form-data">
+                <!-- Hidden input to hold book ID for update and delete operations -->
+                <div class="form-item" id="bookID-cont">
+                    <input type="text" name="bookID" id="bookID" value="" pattern="[0-9]{0,10}" hidden>
                     <div class="error"></div>
                 </div>
-                <form action="#" id="book-form"  enctype="multipart/form-data">
-                    <!-- Hidden input to hold book ID for update and delete operations -->
-                    <div class="form-item" id="bookID-cont">
-                        <input type="text" name="bookID" id="bookID" value="" pattern="[0-9]{0,10}" hidden>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="cover-image-cont">
-                        <input type="file" name="coverImagePath" id="coverImagePath" maxlength="1000" accept=".jpg, .jpeg, .png">
-                        <label for="coverImagePath">Book Cover Image</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="bookTitle">
-                        <input type="text" name="bookTitle" id="bookTitle" pattern="[\w\d ,:']{2,100}" placeholder="Enter book title" maxlength="100" required>
-                        <label for="title">Book Title</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="original-title-cont">
-                        <input type="text" name="originalTitle" id="originalTitle" pattern="[\w\d ,:']{1,100}" placeholder="Enter original title" maxlength="50" required>
-                        <label for="original-title">Original Title</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item search" id="author-search-cont">
-                        <input type="text" name="authorSearch" id="authorSearch" pattern="[A-Za-z'. \\-]{0,100}" placeholder="Search author" maxlength="50" required>
-                        <label for="search-author">Search for an author</label>
-                        <div class="search-output" id="author-search-output"></div>
-                        <div class="error"></div>
-                    </div>
-                    <!-- Hidden input to hold author ID for CRUD operations -->
-                    <div class="form-item" id="authorID-cont">
-                        <input type="text" name="authorID" id="authorID" value="" pattern="[0-9]{0,10}" hidden required>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="year-published-cont">
-                        <input type="number" name="yearPublished" id="yearPublished" pattern="[0-9]{1,4}" placeholder="Enter year of publication" minlength="4" maxlength="4" min="0" max="2021" required>
-                        <label for="year-published">Year of Publication</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="genre-cont">
-                        <!-- TODO: Create as select list -->
-                        <select name="genre" id="genre" required>
-                            <option value="default">--Select book genre--</option>
-                            <option value="novel">Novel</option>
-                            <option value="historical-fiction">Historical Fiction</option>
-                            <option value="fantasy-adventure">Fantasy/Adventure</option>
-                            <option value="fantasy-fiction">Fantasy Fiction</option>
-                            <option value="mystery">Mystery</option>
-                            <option value="high-fantasy">High Fantasy</option>
-                            <option value="fiction">Fiction</option>
-                            <option value="fantasy">Fantasy</option>
-                        </select>
-                        <label for="genre">Genre</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="millions-sold-cont">
-                        <input type="text" name="millionsSold" id="millionsSold" pattern="[0-9]{1,5}" placeholder="Enter millions sold" maxlength="5" required>
-                        <label for="millions-sold">Millions of Copies Sold</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="original-language-cont">
-                        <input type="text" name="originalLanguage" id="originalLanguage" pattern="[A-Za-z]{3,50}" placeholder="Enter original language" maxlength="50" required>
-                        <label for="originalLanguage">Original Language</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-submit">
-                        <input id="add-book-btn" type="button" value="Add">
-                        <input id="update-book-btn" type="button" value="Update">
-                        <input id="delete-book-btn" type="button" value="Delete">
-                    </div>
-                </form>
-                <div class="form-clear">
-                    <input type="button" value="Clear Form" id="clear-form-btn">
+                <div class="form-item" id="cover-image-cont">
+                    <input type="file" name="coverImagePath" id="coverImagePath" maxlength="1000" accept=".jpg, .jpeg, .png">
+                    <label for="coverImagePath">Book Cover Image</label>
+                    <div class="error"></div>
                 </div>
+                <div class="form-item" id="bookTitle">
+                    <input type="text" name="bookTitle" id="bookTitle" pattern="[\w\d ,:']{2,100}" placeholder="Enter book title" maxlength="100" required>
+                    <label for="title">Book Title</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="original-title-cont">
+                    <input type="text" name="originalTitle" id="originalTitle" pattern="[\w\d ,:']{1,100}" placeholder="Enter original title" maxlength="50" required>
+                    <label for="original-title">Original Title</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item search" id="author-search-cont">
+                    <input type="text" name="authorSearch" id="authorSearch" pattern="[A-Za-z'. \\-]{0,100}" placeholder="Search author" maxlength="50" required>
+                    <label for="search-author">Search for an author</label>
+                    <div class="search-output" id="author-search-output"></div>
+                    <div class="error"></div>
+                </div>
+                <!-- Hidden input to hold author ID for CRUD operations -->
+                <div class="form-item" id="authorID-cont">
+                    <input type="text" name="authorID" id="authorID" value="" pattern="[0-9]{0,10}" hidden required>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="year-published-cont">
+                    <input type="number" name="yearPublished" id="yearPublished" pattern="[0-9]{1,4}" placeholder="Enter year of publication" minlength="4" maxlength="4" min="0" max="2021" required>
+                    <label for="year-published">Year of Publication</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="genre-cont">
+                    <!-- TODO: Create as select list -->
+                    <select name="genre" id="genre" required>
+                        <option value="default">--Select book genre--</option>
+                        <option value="novel">Novel</option>
+                        <option value="historical-fiction">Historical Fiction</option>
+                        <option value="fantasy-adventure">Fantasy/Adventure</option>
+                        <option value="fantasy-fiction">Fantasy Fiction</option>
+                        <option value="mystery">Mystery</option>
+                        <option value="high-fantasy">High Fantasy</option>
+                        <option value="fiction">Fiction</option>
+                        <option value="fantasy">Fantasy</option>
+                    </select>
+                    <label for="genre">Genre</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="millions-sold-cont">
+                    <input type="text" name="millionsSold" id="millionsSold" pattern="[0-9]{1,5}" placeholder="Enter millions sold" maxlength="5" required>
+                    <label for="millions-sold">Millions of Copies Sold</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="original-language-cont">
+                    <input type="text" name="originalLanguage" id="originalLanguage" pattern="[A-Za-z]{3,50}" placeholder="Enter original language" maxlength="50" required>
+                    <label for="originalLanguage">Original Language</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-submit">
+                    <input id="add-book-btn" type="button" value="Add">
+                    <input id="update-book-btn" type="button" value="Update">
+                    <input id="delete-book-btn" type="button" value="Delete">
+                </div>
+            </form>
+            <div class="form-clear">
+                <input type="button" value="Clear Form" id="clear-form-btn">
             </div>
         </section>
     </main>

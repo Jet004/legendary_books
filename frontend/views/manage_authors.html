@@ -16,52 +16,50 @@
         <section class="main-container">
             <h1>Manage Authors</h1>
             
-            <div class="form-cont">
-                <div class="form-item search" id="author-search-cont">
-                    <input type="text" name="authorSearch" id="authorSearch" placeholder="Search for an author to update or delete" pattern="[A-Za-z'. \\-]{0,100}">
-                    <div class="search-output" id="author-search-output"></div>
+            <div class="form-item search" id="author-search-cont">
+                <input type="text" name="authorSearch" id="authorSearch" placeholder="Search for an author to update or delete" pattern="[A-Za-z'. \\-]{0,100}">
+                <div class="search-output" id="author-search-output"></div>
+                <div class="error"></div>
+            </div>
+            <form id="author-form" novalidate>
+                <div class="form-item" id="authorID-cont">
+                    <input class="hidden-id" type="text" name="authorID" id="authorID" pattern="[0-9]{0,10}" hidden>
                     <div class="error"></div>
                 </div>
-                <form id="author-form" novalidate>
-                    <div class="form-item" id="authorID-cont">
-                        <input class="hidden-id" type="text" name="authorID" id="authorID" pattern="[0-9]{0,10}" hidden>
-                        <div class="error"></div>
-                    </div>
 
-                    <div class="form-item" id="firstName-cont">
-                        <input type="text" name="firstName" id="firstName" pattern="[A-Za-z'. \\-]{2,100}" placeholder="First Name" required>
-                        <label for="firstName">First Name</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="lastName-cont">
-                        <input type="text" name="lastName" id="lastName" pattern="[A-Za-z'. \\-]{2,100}" placeholder="Last Name" required>
-                        <label for="lastName">Last Name</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="nationality-cont">
-                        <input type="text" name="nationality" id="nationality" pattern="[A-Za-z]{2,100}" placeholder="Nationality" required>
-                        <label for="nationality">Nationality</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="birthYear-cont">
-                        <input type="number" name="birthYear" id="birthYear" pattern="[0-9]{1,4}" placeholder="Year of Birth" maxlength="4" required>
-                        <label for="birthYear">Year of Birth</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-item" id="deathYear-cont">
-                        <input type="number" name="deathYear" id="deathYear" pattern="[0-9]{0,4}" placeholder="Year of Death">
-                        <label for="deathYear">Year of Death</label>
-                        <div class="error"></div>
-                    </div>
-                    <div class="form-submit">
-                        <input id="add-author-btn" type="button" value="Add Author">
-                        <input id="update-author-btn" type="button" value="Update Author">
-                        <input id="delete-author-btn" type="button" value="Delete Author">
-                    </div>
-                </form>
-                <div class="form-clear">
-                    <input type="button" value="Clear Form" id="clear-form-btn">
+                <div class="form-item" id="firstName-cont">
+                    <input type="text" name="firstName" id="firstName" pattern="[A-Za-z'. \\-]{2,100}" placeholder="First Name" required>
+                    <label for="firstName">First Name</label>
+                    <div class="error"></div>
                 </div>
+                <div class="form-item" id="lastName-cont">
+                    <input type="text" name="lastName" id="lastName" pattern="[A-Za-z'. \\-]{2,100}" placeholder="Last Name" required>
+                    <label for="lastName">Last Name</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="nationality-cont">
+                    <input type="text" name="nationality" id="nationality" pattern="[A-Za-z]{2,100}" placeholder="Nationality" required>
+                    <label for="nationality">Nationality</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="birthYear-cont">
+                    <input type="number" name="birthYear" id="birthYear" pattern="[0-9]{1,4}" placeholder="Year of Birth" maxlength="4" required>
+                    <label for="birthYear">Year of Birth</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="deathYear-cont">
+                    <input type="number" name="deathYear" id="deathYear" pattern="[0-9]{0,4}" placeholder="Year of Death">
+                    <label for="deathYear">Year of Death</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-submit">
+                    <input id="add-author-btn" type="button" value="Add Author">
+                    <input id="update-author-btn" type="button" value="Update Author">
+                    <input id="delete-author-btn" type="button" value="Delete Author">
+                </div>
+            </form>
+            <div class="form-clear">
+                <input type="button" value="Clear Form" id="clear-form-btn">
             </div>
         </section>
     </main>

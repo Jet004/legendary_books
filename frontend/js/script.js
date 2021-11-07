@@ -44,7 +44,7 @@ const errorMessage = {
     birthYear: "Please provide a valid year",
     deathYear: "Please provide a valid year",
     email: "Provide a valid email address",
-    password: `Your password should contain: a capital letter, a lower case letter, a number, no spaces and be longer than 6 characters long`,
+    password: `Your password can only contain: letters, numbers and be longer than 6 characters long`,
     "confirm-password": "Passwords must match"
 };
 

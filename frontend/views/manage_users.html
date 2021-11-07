@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+    <script src="js/script.js" defer></script>
+    <script src="js/manage_users.js" defer></script>
+    <title>LB: Manage Users</title>
+</head>
+<body>
+    <header></header>
+    <nav></nav>
+    <main>
+        <section class="main-container">
+            <h1>Manage Users</h1>
+            <form id="user-form" novalidate>
+                <div class="form-item search" id="user-search-cont">
+                    <input type="text" name="userSearch" id="userSearch" pattern="[A-Za-z \\-]{0,100}" placeholder="Search for a user to update or delete" maxlength="50">
+                    <div class="search-output" id="user-search-output"></div>
+                    <div class="error"></div>
+                </div>
+                <!-- Hidden input to hold user ID for update and delete operations -->
+                <div class="form-item" id="user-id-cont">
+                    <input type="text" name="userID" id="userID" value="" hidden>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="username-cont">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" pattern="[A-Za-z0-9]{3,50}" placeholder="Enter a username" maxlength="100" required>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="first-name-cont">
+                    <label for="firstName">First Name</label>
+                    <input type="text" name="firstName" id="firstName" pattern="[A-Za-z]{2,50}" placeholder="First name" maxlength="50" required>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="last-name-cont">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" name="lastName" id="lastName" pattern="[A-Za-z]{2,50}" placeholder="Last name" maxlength="50" required>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="email-cont">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="Email" maxlength="100" required>
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="password-cont">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" pattern="[A-Za-z0-9]{6,50}" placeholder="Password" maxlength="100">
+                    <div class="error"></div>
+                </div>
+                <div class="form-item" id="permissions-cont">
+                    <input type="text" name="permissions" id="permissions" required>
+                    <label for="permissions">User Permission level</label>
+                    <div class="error"></div>
+                </div>
+                <div class="form-submit">
+                    <input type="button" value="Add" id="add-user-btn">
+                    <input type="button" value="Update" id="update-user-btn">
+                    <input type="button" value="Delete" id="delete-user-btn">
+                </div>
+            </form>
+            <div class="form-clear">
+                <input type="button" value="Clear Form" id="clear-form-btn">
+            </div>
+        </section>
+    </main>
+    <footer></footer>
+</body>
+</html>
