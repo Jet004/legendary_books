@@ -12,6 +12,7 @@ const clearSearchOutput = () => {
 
 // Set click event listenter on add book button
 document.getElementById('add-book-btn').addEventListener('click', () => {
+    let passedValidity = true
     // Get form element and convert data to json
     const form = document.getElementById('book-form')
 
@@ -20,14 +21,14 @@ document.getElementById('add-book-btn').addEventListener('click', () => {
         // coverImagePath must contain a file
         if(form.coverImagePath.files.length <= 0){
             validityCheckFailed(form.coverImagePath, true)
-            return false   
+            passedValidity = passedValidity && false   
         }
         // The book genre select should not be set to 'default'
         if(form.genre.value === 'default'){
             validityCheckFailed(form.genre, true)
-            return false
+            passedValidity = passedValidity && false
         }
-        return true
+        return (passedValidity ? true : false)
     })
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation) return
@@ -124,19 +125,20 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
 
     // Validate form data with extra requirements
     let formPassedValidation = validateFormOnSubmit(() => {
+        let passedValidity = true
         // bookID must be present from searching for a book
         if(!bookID.value){
             validityCheckFailed(bookID, true)
-            return false
+            passedValidity = passedValidity && false
         }
 
         // The book genre select should not be set to 'default'
         if(form.genre.value === 'default'){
             validityCheckFailed(form.genre, true)
-            return false
+            passedValidity = passedValidity && false
         }
-
-        return true
+        
+        return (passedValidity ? true : false)
     })
 
     // Return if form data doen't pass validation to prevent fetch request from running
@@ -213,11 +215,12 @@ document.getElementById('delete-book-btn').addEventListener('click', () => {
     
     // Validate form data with extra requirements
     let formPassedValidation = () => {
+        let passedValidity = true
         if(!bookID.value){
             validityCheckFailed(bookID, true)
-            return false
+            passedValidity = passedValidity && false
         }
-        return true
+        return (passedValidity ? true : false)
     }
     // Return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation()) return
@@ -259,19 +262,19 @@ bookSearch.addEventListener('input', () => {
 
     // Validate search input data
     let formPassedValidation = () => {
+        let passedValidity = true
         // Remove any forced error display
         removeErrorForceDisplay(bookSearch)
         // Check to see if input data conforms to the pattern for a book title
         if(!bookSearch.checkValidity()){
             // Validity check failed, stop search and display error
             validityCheckFailed(bookSearch, true)
-            return false
+            passedValidity = passedValidity && false
         } else if(!bookSearch.value){
             // Stop fetch from running when there is no input data
-            return false 
-        } else {
-            return true
+            passedValidity = passedValidity && false
         }
+        return (passedValidity ? true : false)
     }
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation()) return
@@ -374,19 +377,19 @@ authorSearch.addEventListener('input', () => {
 
     // Validate search input data
     let formPassedValidation = () => {
+        let passedValidity = true
         // Remove any forced error display
         removeErrorForceDisplay(authorSearch)
         // Check to see if input data conforms to the pattern for a name
         if(!authorSearch.checkValidity()){
             // Validity check failed, stop search and display error message
             validityCheckFailed(authorSearch, true)
-            return false
+            passedValidity = passedValidity && false
         } else if(!authorSearch.value){
             // Stop fetch from running when there is no input data
-            return false 
-        } else {
-            return true
+            passedValidity = passedValidity && false
         }
+        return (passedValidity ? true : false)
     }
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation()) return

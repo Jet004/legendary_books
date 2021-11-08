@@ -106,7 +106,7 @@ router.get('/authors/:id', validateParamAuthorId, (req,res) => {
     const error = validationResult(req)
     if(!error.isEmpty()){
         // There is a validation error - respond with bad request
-        return res.status(400).json({ error: error.array()})
+        return res.status(400).json({ error: error.array() })
     }
 
     // Query the database

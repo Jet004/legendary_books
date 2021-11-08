@@ -5,7 +5,7 @@ const fs = require('fs')
 
 const router = express.Router()
 
-// // Import express validation middleware
+// Import express validation middleware
 const { param, body, validationResult } = require('express-validator')
 
 // Import book model so I can query the database from this file

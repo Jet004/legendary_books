@@ -2,23 +2,6 @@
 
 -- TODO
 
-- upload cover images of the actual books rather than random cupcakes
-
-bookController
-userController
-    - Sanitise user input using express-validator
-    - validate file using express fileupload
-
-script.js
-    - add validation error messages for books and users
-
-
-manage_users.html
-    - double check validation information
-
-manage_users.js
-    - complete validation of api fetches
-
 loggingModel
 
 list_books.html
@@ -32,11 +15,19 @@ manage_authors -- tidy up css
 style.css
 
 -- SHOULD BE DONE
-bookModel
+
 
 -- COMPLETE
+
+bookController
+bookModel
 manage_books.html
-manage_authors.js
-manage_authors.html
+manage_books.js
 authorController
 authorModel
+manage_authors.html
+manage_authors.js
+userController
+userModel
+manage_users.html
+manage_users.js

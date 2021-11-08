@@ -33,12 +33,12 @@
                 </div>
                 <div class="form-item" id="first-name-cont">
                     <label for="firstName">First Name</label>
-                    <input type="text" name="firstName" id="firstName" pattern="[A-Za-z]{2,50}" placeholder="First name" maxlength="50" required>
+                    <input type="text" name="firstName" id="firstName" pattern="[A-Za-z'. \\-]{2,100}" placeholder="First name" maxlength="50" required>
                     <div class="error"></div>
                 </div>
                 <div class="form-item" id="last-name-cont">
                     <label for="lastName">Last Name</label>
-                    <input type="text" name="lastName" id="lastName" pattern="[A-Za-z]{2,50}" placeholder="Last name" maxlength="50" required>
+                    <input type="text" name="lastName" id="lastName" pattern="[A-Za-z'. \\-]{2,100}" placeholder="Last name" maxlength="50" required>
                     <div class="error"></div>
                 </div>
                 <div class="form-item" id="email-cont">
@@ -52,7 +52,7 @@
                     <div class="error"></div>
                 </div>
                 <div class="form-item" id="permissions-cont">
-                    <input type="text" name="permissions" id="permissions" required>
+                    <input type="text" name="permissions" id="permissions" pattern="admin" required>
                     <label for="permissions">User Permission level</label>
                     <div class="error"></div>
                 </div>

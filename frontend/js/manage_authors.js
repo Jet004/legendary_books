@@ -53,11 +53,12 @@ document.getElementById('update-author-btn').addEventListener('click', () => {
 
     // Validate form data with extra requirements
     let formPassedValidation = validateFormOnSubmit(() => {
+        let passedValidity = true
         if(!authorID.value){
             validityCheckFailed(authorID, true)
-            return false
+            passedValidity = passedValidity && false
         }
-        return true
+        return (passedValidity ? true : false)
     })
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation) return
@@ -89,11 +90,12 @@ document.getElementById('delete-author-btn').addEventListener('click', () => {
     
     // Validate form data with extra requirements
     let formPassedValidation = () => {
+        let passedValidity = true
         if(!authorID.value){
             validityCheckFailed(authorID, true)
-            return false
+            passedValidity = passedValidity && false
         }
-        return true
+        return (passedValidity ? true : false)
     }
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation()) return
@@ -135,19 +137,19 @@ authorSearch.addEventListener('input', () => {
 
     // Validate search input data
     let formPassedValidation = () => {
+        let passedValidity = true
         // Remove any forced error display
         removeErrorForceDisplay(authorSearch)
         // Check to see if input data conforms to the pattern for a name
         if(!authorSearch.checkValidity()){
             // Validity check failed, stop search and display error message
             validityCheckFailed(authorSearch, true)
-            return false
+            passedValidity = passedValidity && false
         } else if(!authorSearch.value){
             // Stop fetch from running when there is no input data
-            return false 
-        } else {
-            return true
+            passedValidity = passedValidity && false
         }
+        return (passedValidity ? true : false)
     }
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation()) return

@@ -36,16 +36,31 @@ document.addEventListener('load', fetchSiteIncludes())
 
 // Custome validation messages for each input based on id
 const errorMessage = {
+    // Book validation error messages
+    bookSearch: "Please enter a valid book name",
+    bookID: "Search for the book you would like to update/delete",
+    coverImagePath: "Please choose a .png, .jpg or .jpeg to upload as a cover image",
+    bookTitle: "Please provide a valid book title",
+    originalTitle: "Please provide a valid title",
+    yearPublished: "Must be a valid year in the past",
+    genre: "Select a genre",
+    millionsSold: "Provide a number between 0 and 99999",
+    originalLanguage: "Please enter a valid language",
+    // Author validation error messages
     authorSearch: "Please enter a valid name",
     authorID: "Search for the author you would like to update/delete",
-    firstName: "Your first name should only contain letters and be longer than two characters long",
-    lastName: "Your last name should only contain letters and be longer than two characters long",
+    firstName: "First name should only contain letters and be longer than two characters long",
+    lastName: "Last name should only contain letters and be longer than two characters long",
     nationality: "Please provide a valid nationality",
     birthYear: "Please provide a valid year",
     deathYear: "Please provide a valid year",
+    // User validation error messages
+    userSearch: "Please enter a valid name",
+    userID: "Search for the user you would like to update/delete",
+    username: "Please enter a valid username",
     email: "Provide a valid email address",
-    password: `Your password can only contain: letters, numbers and be longer than 6 characters long`,
-    "confirm-password": "Passwords must match"
+    password: "Your password can only contain: letters, numbers and be longer than 6 characters long",
+    permissions: "Please enter a permission level for the user"
 };
 
 const validityCheckFailed = (elem, forceErrorDisplay = false) => {
@@ -63,7 +78,6 @@ const validityCheckFailed = (elem, forceErrorDisplay = false) => {
     // checkbox validation)
     errorDiv.style.borderTop = "1px solid #ef233c";
     if(forceErrorDisplay === true) errorDiv.style.display = 'block'
-    //console.log(elem.id + " DISPLAY: " + errorDiv.style.display)
 }
 
 const removeErrorForceDisplay = (elem) => {
@@ -74,6 +88,7 @@ const removeErrorForceDisplay = (elem) => {
     let errorDiv = document.querySelector(
         "#" + elem.parentNode.getAttribute("id") + "> .error"
     );
+
     errorDiv.style.removeProperty('display')
 }
 
@@ -136,7 +151,7 @@ const validateOnFormInput = (e) => {
     checkElementValid(elem);
 }
 
-// Set for event listeners to handle form validation on form input/change
+// Set form event listeners to handle form validation on input/change
 let [ formElement ] = document.getElementsByTagName('form')
 formElement.addEventListener('input', validateOnFormInput)
 formElement.addEventListener('change', validateOnFormInput)
@@ -150,6 +165,7 @@ for(elem of searchElements){
         let target = e.target.parentNode.id.split('-')[0] + 'ID'
         // Remove id field error message
         let idField = document.getElementById(target)
+
         removeErrorForceDisplay(idField)
     })
 }

@@ -1,25 +1,3 @@
-// Code to check validity of passwords
-//  // Check that passwords match
-//  let password = document.getElementById("password");
-//  let confirmPassword = document.getElementById("confirm-password");
-
-//  // Check that there are no empty values
-//  if (password && confirmPassword) {
-//      // Check that passwords match
-//      if (password.value != confirmPassword.value) {
-//          //Set custom error message
-//          confirmPassword.setCustomValidity("Passwords must match");
-
-//          //Set error div to error message
-//          let errorDiv = document.querySelector(
-//              "#" + confirmPassword.parentNode.getAttribute("id") + "> .error"
-//          );
-//          errorDiv.innerHTML = confirmPassword.validationMessage;
-//          // Set error flag to prevent form from submitting
-//          errorCheck = false;
-//      }
-//  }
-
 // Clear search output
 const clearSearchOutput = () => {
     // Get the search output element
@@ -39,7 +17,18 @@ document.getElementById('add-user-btn').addEventListener('click', () => {
     const formDataJSON = JSON.stringify(Object.fromEntries(new FormData(form)))
 
     // Validate form data
-    let formPassedValidation = validateFormOnSubmit()
+    let formPassedValidation = validateFormOnSubmit(() => {
+        let passedValidate = true
+        // Password field must pass validation on add
+        if(!form.password.checkValidity() || !form.password.value){
+            // Password didn't pass validity check
+            validityCheckFailed(form.password, true)
+            passedValidate = passedValidate && false
+        }
+
+        return (passedValidate ? true : false)
+    })
+
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation) return
 
@@ -75,11 +64,13 @@ document.getElementById('update-user-btn').addEventListener('click', () => {
 
     // Validate form data with extra requirements
     let formPassedValidation = validateFormOnSubmit(() => {
+        let passedValidity = true
         if(!userID.value){
             validityCheckFailed(userID, true)
-            return false
+            passedValidity = passedValidity && false
         }
-        return true
+
+        return (passedValidity ? true : false)
     })
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation) return
@@ -111,11 +102,12 @@ document.getElementById('delete-user-btn').addEventListener('click', () => {
     
     // Validate form data with extra requirements
     let formPassedValidation = () => {
+        let passedValidity = true
         if(!userID.value){
             validityCheckFailed(userID, true)
-            return false
+            passedValidity = passedValidity && false
         }
-        return true
+        return (passedValidity ? true : false)
     }
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation()) return
@@ -157,19 +149,19 @@ userSearch.addEventListener('input', () => {
 
     // Validate search input data
     let formPassedValidation = () => {
+        let passedValidity = true
         // Remove any forced error display
         removeErrorForceDisplay(userSearch)
         // Check to see if input data conforms to the pattern for a name
         if(!userSearch.checkValidity()){
             // Validity check failed, stop search and display error message
             validityCheckFailed(userSearch, true)
-            return false
+            passedValidity = passedValidity && false
         } else if(!userSearch.value){
             // Stop fetch from running when there is no input data
-            return false 
-        } else {
-            return true
+            passedValidity = passedValidity && false
         }
+        return (passedValidity ? true : false)
     }
     // return if form data doen't pass validation to prevent fetch request from running
     if(!formPassedValidation()) return
@@ -204,7 +196,6 @@ userSearch.addEventListener('input', () => {
                 user.addEventListener('click', () => {
                     // Get the data for the selected user
                     let dataToPopulate = data.users.find(item => item.userID == user.id)
-                    console.log(dataToPopulate)
                     // Get form elements
                     let formElements = document.getElementsByTagName('form')[0].elements
                     // Populate the form with the user's data
