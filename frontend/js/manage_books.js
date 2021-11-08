@@ -316,6 +316,11 @@ bookSearch.addEventListener('input', () => {
                     for(let elem of formElements){
                         // Fill form with selected book/author data
                         if(elem.name && elem.name != 'coverImagePath'){
+                            // Decode HTML entities if is string
+                            if(typeof dataToPopulate[elem.name] === 'string'){
+                                dataToPopulate[elem.name] = decodeHTMLEntities(dataToPopulate[elem.name])
+                            }
+
                             // Enter author name into author search field
                             if(elem.name == 'authorSearch'){
                                 elem.value = dataToPopulate.authorName
@@ -326,7 +331,7 @@ bookSearch.addEventListener('input', () => {
                     }
                     // Close the search output box
                     bookSearchOutput.style.display = 'none'
-                    bookSearch.value = book.innerHTML
+                    bookSearch.value = decodeHTMLEntities(book.innerHTML)
                 })
             }
 
@@ -432,7 +437,7 @@ authorSearch.addEventListener('input', () => {
                       
                     // Close the search output box
                     authorSearchOutput.style.display = 'none'
-                    authorSearch.value = author.innerHTML
+                    authorSearch.value = decodeHTMLEntities(author.innerHTML)
                 })
             }
 

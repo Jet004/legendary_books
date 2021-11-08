@@ -96,7 +96,7 @@ const validateSearchUserName = [
     // Sanitise user input - only accept [A-Za-z'.- ]
     param('input').exists(checkFalsy = true).withMessage("Exists")
         .notEmpty().withMessage("Not Empty")
-        .matches("[A-Za-z',\\- ]").withMessage("Pattern")
+        .matches("[A-Za-z' \\- ]").withMessage("Pattern")
         .isLength({min:0, max:100}).withMessage("Length")
         .trim()
         .escape()

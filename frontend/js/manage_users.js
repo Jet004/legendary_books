@@ -200,13 +200,18 @@ userSearch.addEventListener('input', () => {
                     let formElements = document.getElementsByTagName('form')[0].elements
                     // Populate the form with the user's data
                     for(let elem of formElements){
+                        // Decode HTML entities if is string
+                        if(typeof dataToPopulate[elem.name] === 'string'){
+                            dataToPopulate[elem.name] = decodeHTMLEntities(dataToPopulate[elem.name])
+                        }
+                        
                         if(elem.name && elem.name != 'password'){
                             elem.value = dataToPopulate[elem.name]
                         }
                     }
                     // Close the search output box
                     userSearchOutput.style.display = 'none'
-                    userSearch.value = user.innerHTML
+                    userSearch.value = decodeHTMLEntities(user.innerHTML)
                 })
             }
 

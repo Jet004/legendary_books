@@ -32,6 +32,30 @@ document.addEventListener('load', fetchSiteIncludes())
 //----------------------------- END Import Includes -----------------------------//
 
 
+//----------------------------- START Helper Functions -----------------------------//
+function decodeHTMLEntities(text) {
+    let entities = [
+        ['amp', '&'],
+        ['apos', '\''],
+        ['#x27', '\''],
+        ['#x2F', '/'],
+        ['#39', '\''],
+        ['#47', '/'],
+        ['lt', '<'],
+        ['gt', '>'],
+        ['nbsp', ' '],
+        ['quot', '"']
+    ];
+
+    for (let i = 0, max = entities.length; i < max; ++i) 
+        text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+
+    return text;
+}
+
+//----------------------------- END Helper Functions -----------------------------//
+
+
 //----------------------------- START Form Validation -----------------------------//
 
 // Custome validation messages for each input based on id
@@ -153,8 +177,10 @@ const validateOnFormInput = (e) => {
 
 // Set form event listeners to handle form validation on input/change
 let [ formElement ] = document.getElementsByTagName('form')
-formElement.addEventListener('input', validateOnFormInput)
-formElement.addEventListener('change', validateOnFormInput)
+if(formElement){
+    formElement.addEventListener('input', validateOnFormInput)
+    formElement.addEventListener('change', validateOnFormInput)
+}
 
 // Set input event listener to clear error on search input
 let searchElements = document.getElementsByClassName('search')
@@ -171,17 +197,19 @@ for(elem of searchElements){
 }
 
 // Set event listener to clear all form error values when search item is seleced
-let searchOutput = document.getElementsByClassName('search-output')[0]
-let formElements = document.getElementsByTagName('form')[0].elements
-searchOutput.addEventListener('click', () => {
-    for(elem of formElements){
-        if(elem.type != 'button'){
-            // Remove all error messages
-            removeErrorForceDisplay(elem)
+if(formElement){
+    let searchOutput = document.getElementsByClassName('search-output')[0]
+    let formElements = document.getElementsByTagName('form')[0].elements
+    searchOutput.addEventListener('click', () => {
+        for(elem of formElements){
+            if(elem.type != 'button'){
+                // Remove all error messages
+                removeErrorForceDisplay(elem)
+            }
         }
-    }
 
-})
+    })
+}
 
 
 //----------------------------- END Form Validation -----------------------------//

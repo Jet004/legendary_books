@@ -188,13 +188,18 @@ authorSearch.addEventListener('input', () => {
                     let formElements = document.getElementsByTagName('form')[0].elements
                     // Populate the form with the author's data
                     for(let elem of formElements){
+                        // Decode HTML entities if is string
+                        if(typeof dataToPopulate[elem.name] === 'string'){
+                            dataToPopulate[elem.name] = decodeHTMLEntities(dataToPopulate[elem.name])
+                        }
+
                         if(elem.name){
                             elem.value = dataToPopulate[elem.name]
                         }
                     }
                     // Close the search output box
                     authorSearchOutput.style.display = 'none'
-                    authorSearch.value = author.innerHTML
+                    authorSearch.value = decodeHTMLEntities(author.innerHTML)
                 })
             }
 

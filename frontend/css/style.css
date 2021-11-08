@@ -232,6 +232,7 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
     nav {
         display: flex;
         justify-content: center;
+        align-items: center;
     }
     
     nav > ul {
@@ -287,6 +288,7 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
     nav {
         display: flex;
         justify-content: center;
+        align-items: center;
     }
     
     nav > ul {

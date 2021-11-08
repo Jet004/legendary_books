@@ -12,6 +12,8 @@ const { param, body, validationResult } = require('express-validator')
 const bookModel = require('../models/bookModel')
 // Import bookAuthor model so I can search for books with author data included
 const bookAuthorModel = require('../models/bookAuthorModel')
+// Import logging model so we can log when books are added or changed
+const loggingModel = require('../models/loggingModel')
 
 //--------------------- Define Validation Criteria ---------------------//
 
@@ -36,14 +38,12 @@ const validateCommon = [
     body('authorID').exists(checkFalsy = true).withMessage("Exists")
         .isInt().withMessage("Type: INT")
         .isLength({min:1, max:10}).withMessage("Length")
-        .trim()
-        .escape(),
+        .trim(),
     // yearPublished
     body('yearPublished').exists(checkFalsy = true).withMessage("Exists")
         .isLength({min:1, max:4}).withMessage("Length")
-        .isInt()
-        .trim()
-        .escape(),
+        .isInt().withMessage("Type: INT")
+        .trim(),
     // genre
     body('genre').exists(checkFalsy = true).withMessage("Exists")
         .isIn([
@@ -56,14 +56,12 @@ const validateCommon = [
             "fiction",
             "fantasy"
         ]).withMessage("In List")
-        .trim()
-        .escape(),
+        .trim(),
     // millionsSold
     body('millionsSold').exists().withMessage("Exists")
         .isInt().withMessage("Type: INT")
         .isLength({min: 1, max: 5}).withMessage("Length")
-        .trim()
-        .escape(),
+        .trim(),
     // originalLanguage
     body('originalLanguage').exists(checkFalsy = true).withMessage("Exists")
         .isAlpha().withMessage("Type: ALPHA")
@@ -97,7 +95,6 @@ const validateParamBookId = [
     param('id').exists(checkFalsy = true).withMessage("Exists")
         .isInt().withMessage("Type: INT")
         .trim()
-        .escape()
 ]
 
 // Set out validation criteria for user id in body
@@ -106,7 +103,6 @@ const validateBodyBookId = [
     body('authorID').exists(checkFalsy = true).withMessage("Exists")
         .isInt().withMessage("Type: INT")
         .trim()
-        .escape()
 ]
 
 // Set out validation criteria for book title search
@@ -261,11 +257,22 @@ router.post('/books/add', validateCommon, validateAddBook, (req,res) => {
                 "status": "Book added to database with id: " + result.insertId,
                 "bookID": result.insertId
             })
+            // Return insertId to pass as input to logging query
+            return result.insertId
+        })
+        // Run logging query
+        .then(loggingModel.logBookAdd)
+        .then(results => {
+            // Check that logging was successful
+            if(!results.insertId){
+                // Logging failed, log failure
+                console.log("logging on addition of new book failed")
+            }
         })
         .catch(error => {
             // Database returned an error, log error and respond with 500
             console.log(error)
-            res.status(500).json("query error")
+            return res.status(500).json("query error")
         })
 })
 
