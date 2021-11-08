@@ -1,5 +1,6 @@
 const express = require('express')
 const fileUpload = require('express-fileupload')
+const session = require('express-session')
 
 const server = express()
 
@@ -7,6 +8,16 @@ const port = 8000
 
 // Enable middleware for file uploads
 server.use(fileUpload({createParentPath: true}))
+// Enable middleware for session management
+server.use(session({
+    secret: "kjsdbfiuwd7687569832h98eh98dwcwdf",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {secure: false}
+}))
+
+// TODO: Access Control Middleware
+
 
 // Enable middleware for JSON and urlencoded form data
 server.use(express.json())

@@ -2,21 +2,16 @@
 
 -- TODO
 
-Implement sessions, login and logout
-login.html
-login.js
-logout.js
+Access control middleware
 
-Implement logging in books and users
+Implement logging for books and users
 loggingModel - should be done
-bookController - add adn update routes
+bookController - add and update routes
 userController - add and update routes
-
 
 list_books.html
 list_books.js
 
-manage_authors -- tidy up css
 style.css
 
 
@@ -34,3 +29,7 @@ userController
 userModel
 manage_users.html
 manage_users.js
+login.html
+login.js
+logout function in script.js
+localStorage object to track login state

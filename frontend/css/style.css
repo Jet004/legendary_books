@@ -36,6 +36,25 @@ header {
     align-items: center;
 }
 
+header #login-cont a,
+header #logout-cont a {
+    text-decoration: none;
+    color: rgb(41, 41, 255);
+}
+header #login-cont a:hover,
+header #logout-cont a:hover{
+    color: rgb(20, 125, 230);
+    cursor: pointer;
+}
+
+header #login-cont {
+    display: block;
+}
+
+header #logout-cont {
+    display: none;
+}
+
 nav {
     background-color: var(--nav-bg-color);
 }

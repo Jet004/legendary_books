@@ -15,17 +15,19 @@
     <main>
         <section class="main-container">
             <h1>Login Form</h1>
-            <form action="#" id="user-form">
-                <div class="form-item">
+            <form id="login-form" novalidate>
+                <div class="form-item" id="username-cont">
                     <label for="username">Username</label>
-                    <input type="text" name="username" id="username" pattern="[A-Za-z0-9]{3,}" placeholder="Enter a username" maxlength="100" required>
+                    <input type="text" name="username" id="username" pattern="[A-Za-z0-9]{3,50}" placeholder="Username" maxlength="50" required>
+                    <div class="error"></div>
                 </div>
-                <div class="form-item">
+                <div class="form-item" id="password-cont">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" pattern="[A-Za-z0-9]{6,100}" placeholder="Password" maxlength="100" required>
+                    <input type="password" name="password" id="password" pattern="[A-Za-z0-9]{6,50}" placeholder="Password" maxlength="50" required>
+                    <div class="error"></div>
                 </div>
                 <div class="form-submit">
-                    <input type="submit" name="login" value="Log in">
+                    <input id="user-login-btn" type="button" name="login" value="Log in">
                 </div>
             </form>
         </section>

@@ -18,7 +18,7 @@ module.exports.getUserById = (userID) => {
 
 module.exports.getAuthByUsername = (username) => {
     return db.query(
-        "SELECT userID, username, password FROM users WHERE username = ?",
+        "SELECT userID, username, password, permissions FROM users WHERE username = ?",
         [username]
     )
 }

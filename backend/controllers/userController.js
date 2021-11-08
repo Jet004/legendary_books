@@ -12,6 +12,7 @@ const { param, body, validationResult } = require('express-validator')
 // Import user model so we can query the user table in the database
 const userModel = require('../models/userModel')
 const { route } = require('./authorController')
+const session = require('express-session')
 
 
 //--------------------- Define Validation Criteria ---------------------//
@@ -339,6 +340,68 @@ router.delete('/users/:id', validateParamUserId, (req,res) => {
                 "message": error
             })
         })
+})
+
+router.post('/users/login', (req,res) => {
+
+    // Get user login credentials from request body
+    const loginDetails = req.body
+
+    // Check for validation errors
+
+    // Search databse for username and check if passwords match
+    userModel.getAuthByUsername(loginDetails.username)
+        .then(results => {
+            // Check if we got results
+            if(results.length > 0){
+                const userCredentials = results[0]
+                // We have results, check that user password matched hashed password
+                // from the database
+                if(bcrypt.compareSync(loginDetails.password, userCredentials.password)){
+                    // Passwords match, create user session
+                    req.session.user = {
+                        userID: userCredentials.userID,
+                        permissions: userCredentials.permissions
+                    }
+
+                    // Login was successful, respond with 200 OK
+                    res.status(200).json({
+                        "status": "success",
+                        "message": "Login successful"
+                    })
+                } else {
+                    // Login failed, respond with bad request
+                    res.status(400).json({
+                        "status": "failed",
+                        "message": "The username or password are incorrect"
+                    })
+                }
+
+            } else {
+                // No results, respond with bad request
+                res.status(400).json({
+                    "status": "failed",
+                    "message": "No user with username: " + loginDetails.username
+                })
+            }
+        })
+        .catch(error => {
+            // Database threw an error, log error and respond with server error
+            console.log(error)
+            res.status(500).json({
+                "status": "error",
+                "message": "query error"
+            })
+        })
+})
+
+router.post('/users/logout', (req,res) => {
+    // Destroy the session to log the user out, respond with 200 OK
+    req.session.destroy()
+    res.status(200).json({
+        "status": "success",
+        "message": "logged out successfully"
+    })
 })
 
 module.exports = router

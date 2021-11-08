@@ -1,3 +1,43 @@
+//----------------------------- START LocalStorage -----------------------------//
+// If userLoggedIn not set in localStorage - set to false
+let userLoggedIn = localStorage.getItem('userLoggedIn')
+if(userLoggedIn != 'true') userLoggedIn = false
+
+console.log(userLoggedIn)
+
+
+//----------------------------- END LocalStorage -----------------------------//
+
+//----------------------------- START Log Out User -----------------------------//
+// API call to log user out
+const logout = () => {
+    // No data to be validated, just request logout
+    fetch('/api/users/logout', {
+        method: "POST"
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Check if logout was successful
+            if(data.status === "success"){
+                // Logout was successful, alert to user and redirect to login page
+                alert(data.message)
+                localStorage.setItem("userLoggedIn", "false")
+                window.location.href = 'login.html'
+            }
+            // No need to do anything if logout failed. It would mean that there
+            // was some kind of network failure. It would return an error which we
+            // will catch below in any case.
+        })
+        .catch(error => {
+            // There was some unexpected error, log error and alert user
+            console.log("Unexpected error - " + error)
+            alert("Logout failed: an unexpected error occured. Contact the site administrator if the problem persists")
+        })
+}
+
+//----------------------------- END Log Out User -----------------------------//
+
+
 //----------------------------- START Import Includes -----------------------------//
 
 // Fetch HTML header, nav and footer
@@ -10,6 +50,19 @@ const fetchSiteIncludes = () => {
         .then(response => response.text())
         .then(data => {
             headerElement.outerHTML = data
+            // Set click event listener on logout link to request logout
+            document.getElementById('logout-link').addEventListener('click', logout)
+            // Get login/logout divs to toggle display
+            let loginDiv = document.getElementById('login-cont')
+            let logoutDiv = document.getElementById('logout-cont')
+            // Toggle login/logout links
+            if(userLoggedIn === "true"){
+                loginDiv.style.display = "none"
+                logoutDiv.style.display = "block"
+            } else {
+                loginDiv.style.display = "block"
+                logoutDiv.style.display = "none"
+            }
         })
 
     fetch('../views/includes/nav.html')
@@ -184,21 +237,23 @@ if(formElement){
 
 // Set input event listener to clear error on search input
 let searchElements = document.getElementsByClassName('search')
-for(elem of searchElements){
-    elem.addEventListener('input', (e) => {
-        // Determine which search bar triggered event and build css selector
-        // for the related hidden id field
-        let target = e.target.parentNode.id.split('-')[0] + 'ID'
-        // Remove id field error message
-        let idField = document.getElementById(target)
+if(searchElements){
+    for(elem of searchElements){
+        elem.addEventListener('input', (e) => {
+            // Determine which search bar triggered event and build css selector
+            // for the related hidden id field
+            let target = e.target.parentNode.id.split('-')[0] + 'ID'
+            // Remove id field error message
+            let idField = document.getElementById(target)
 
-        removeErrorForceDisplay(idField)
-    })
+            removeErrorForceDisplay(idField)
+        })
+    }
 }
 
 // Set event listener to clear all form error values when search item is seleced
-if(formElement){
-    let searchOutput = document.getElementsByClassName('search-output')[0]
+let searchOutput = document.getElementsByClassName('search-output')[0]
+if(searchOutput){
     let formElements = document.getElementsByTagName('form')[0].elements
     searchOutput.addEventListener('click', () => {
         for(elem of formElements){
