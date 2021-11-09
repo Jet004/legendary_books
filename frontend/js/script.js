@@ -1,13 +1,3 @@
-//----------------------------- START LocalStorage -----------------------------//
-// If userLoggedIn not set in localStorage - set to false
-let userLoggedIn = localStorage.getItem('userLoggedIn')
-if(userLoggedIn != 'true') userLoggedIn = false
-
-console.log(userLoggedIn)
-
-
-//----------------------------- END LocalStorage -----------------------------//
-
 //----------------------------- START Log Out User -----------------------------//
 // API call to log user out
 const logout = () => {
@@ -36,6 +26,17 @@ const logout = () => {
 }
 
 //----------------------------- END Log Out User -----------------------------//
+
+
+//----------------------------- START LocalStorage -----------------------------//
+// If userLoggedIn not set in localStorage - set to false
+let userLoggedIn = localStorage.getItem('userLoggedIn')
+if(userLoggedIn != 'true') userLoggedIn = false
+
+console.log(userLoggedIn)
+
+
+//----------------------------- END LocalStorage -----------------------------//
 
 
 //----------------------------- START Import Includes -----------------------------//

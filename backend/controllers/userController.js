@@ -11,8 +11,8 @@ const { param, body, validationResult } = require('express-validator')
 
 // Import user model so we can query the user table in the database
 const userModel = require('../models/userModel')
-const { route } = require('./authorController')
-const session = require('express-session')
+// Import loggin model so we can log user additions and updates in the database
+const loggingModel = require('../models/loggingModel')
 
 
 //--------------------- Define Validation Criteria ---------------------//
@@ -230,6 +230,20 @@ router.post('/users/add', validateCommon, validateAddUser, (req,res) => {
                 "message": "user successfully added to database with id: " + results.insertId,
                 "userID": results.insertId
             })
+            // Return userID and currently logged in user's id to pass into logging query
+            return([results.insertId, req.session.user.userID])
+        })
+        // Run logging query
+        .then(loggingModel.logUserAdd)
+        .then(results => {
+            // Check that logging was successful
+            if(!results.insertId){
+                // Logging failed, log failure
+                console.log("failed to log addition of user")
+            } else {
+                // Logging successful, log to console
+                console.log("-- Log: New user added to database")
+            }
         })
         .catch(error => {
             // Database returned an error, log error and respond with server error
@@ -260,8 +274,13 @@ router.patch('/users/update', validateCommon, validateUpdateUser, validateBodyUs
         .then(results => {
             // Check that we have results
             if(results.length <= 0){
-                // No result. reject promise chain
-                Promise.reject("No user found with id: " + user.userID)
+                // No result, respond with bad request then break promise chain
+                res.status(400).json({
+                    "status": "failed",
+                    "message": "Update failed: no user with id: " + user.userID
+                })
+                // Break promise chain to prevent unnecessary database queries
+                return Promise.reject("breakPromiseChain")
             } else {
                 // We have data, set correct password to be inserted in update
                 if(user.password){
@@ -285,17 +304,41 @@ router.patch('/users/update', validateCommon, validateUpdateUser, validateBodyUs
                     "status": "success",
                     "message": "successfully updated user with id: " + user.userID
                 })
+
+                // Return userID and id of currently logged in user for logging query
+                return [user.userID, req.session.user.userID]
             } else {
                 // No user found to update, respond with not found
                 res.status(404).json({
                     "status": "failed",
                     "message": "could not update user, no user with id: " + user.userID
                 })
+
+                // return a rejected promise to break promise chain and prevent unnecessary
+                // database queries
+                return Promise.reject("breakPromiseChain")
             }
+        })
+        .then(loggingModel.logUserChange)
+        .then(results => {
+            console.log(results)
+            // Check that logging was successful
+            if(results.insertId){
+                // Logging successful, log to console
+                console.log("-- Log: Changes to user added to database")
+            } else {
+                // Logging failed, log failure
+                console.log("failed to log changes")
+            }
+        })
+        .then(null, err => {
+            // This then acts like a "catch" to skip running queries when conditions are not met
+            // without throwing a real error
+            if(err != "breakPromiseChain") throw err
         })
         .catch(error => {
             // Database returned an error, log error and respond with server error
-            console.log(error)
+            console.log("err", error)
             res.status(500).json({
                 "error": error
             })

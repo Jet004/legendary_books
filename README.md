@@ -2,12 +2,14 @@
 
 -- TODO
 
-Access control middleware
+LocalStorage needs to be set from database. fetch user login status
 
 Implement logging for books and users
 loggingModel - should be done
 bookController - add and update routes
 userController - add and update routes
+
+Access control middleware
 
 list_books.html
 list_books.js

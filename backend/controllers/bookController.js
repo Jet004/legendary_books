@@ -257,8 +257,8 @@ router.post('/books/add', validateCommon, validateAddBook, (req,res) => {
                 "status": "Book added to database with id: " + result.insertId,
                 "bookID": result.insertId
             })
-            // Return insertId to pass as input to logging query
-            return result.insertId
+            // Return insertId and logged in userID to pass as input to logging query
+            return [result.insertId, req.session.user.userID]
         })
         // Run logging query
         .then(loggingModel.logBookAdd)
@@ -266,7 +266,10 @@ router.post('/books/add', validateCommon, validateAddBook, (req,res) => {
             // Check that logging was successful
             if(!results.insertId){
                 // Logging failed, log failure
-                console.log("logging on addition of new book failed")
+                console.log("failed to log addition of book")
+            } else {
+                // Logging successful, log to console
+                console.log("-- Log: New book added to database")
             }
         })
         .catch(error => {
@@ -318,29 +321,48 @@ router.patch('/books/update', validateCommon, validateUpdateBook, validateBodyBo
                     // deleting the old path on update book with no new file
                     book.coverImagePath = oldFilePath
                 }
-
-                // Update book details in the database
-                bookModel.updateBook(book)
-                    .then(result => {
-                        // Check if update was successful
-                        if(result.affectedRows > 0){
-                            // Update successful, respond with 200
-                            res.status(200).json("sucessfully updated book with id: " + book.bookID)
-                        } else {
-                            // Update failed, respond with 400
-                            res.status(400).json("could not update book - no book with id: " + book.bookID)
-                        }
-                    })
-                    .catch(error => {
-                        // Database returned an error, log error and respond with server error
-                        console.log(error)
-                        res.status(500).json("query error")
-                    })
-
             } else {
                 // Couldn't find book, respond with not found
                 res.status(404).json("book not found")
+                // Return undefined so the next promise chain can be prevented from running
+                return Promise.reject("breakPromiseChain")
             }
+            // Ready to update book
+            return book
+        })
+        // Update book details in the database
+        .then(book => {
+            return bookModel.updateBook(book)
+        })
+        .then(result => {
+            // Check if update was successful
+            if(result.affectedRows > 0){
+                // Update successful, respond with 200
+                res.status(200).json("sucessfully updated book with id: " + book.bookID)
+                return [book.bookID, req.session.user.userID]
+            } else {
+                // Update failed, respond with 400
+                res.status(400).json("could not update book - no book with id: " + book.bookID)
+                // Break promise chain to prevent running queries
+                return Promise.reject("breakPromiseChain")
+            }
+        })
+        // Log book updated
+        .then(loggingModel.logBookChange)
+        .then(results => {
+            // Check that logging was successful
+            if(results.insertId){
+                // Logging successful, log to console
+                console.log("-- Log: Changes to book added to database")
+            } else {
+                // Logging failed, log failure
+                console.log("failed to log changes")
+            }
+        })
+        .then(null, (err) => {
+            // This then acts like a "catch" to skip running queries when conditions are not met
+            // without throwing a real error
+            if(err != "breakPromiseChain") throw err
         })
         .catch(error => {
             // Database returned an error, log the error then respond with server error

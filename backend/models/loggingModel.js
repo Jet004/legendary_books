@@ -1,30 +1,32 @@
 // Import database so we can query the database from this file
 const db = require('./database')
 
-module.exports.logBookAdd = (bookID, changeUserID) => {
+module.exports.logBookAdd = ([bookID, changeUserID]) => {
+    console.log(typeof Date.now()+'', Date.now()+'')
     return db.query(
-        "INSERT INTO changeLog(dateCreated, bookID, changeUserID) VALUES(?, ?, ?)",
-        [Date.now(), bookID, changeUserID]
+        "INSERT INTO changelog(dateCreated, bookID, changeUserID) VALUES(?, ?, ?)",
+        [Date.now()+'', bookID, changeUserID]
     )
 }
 
-module.exports.logBookChange = (bookID, changeUserID) => {
+module.exports.logBookChange = ([bookID, changeUserID]) => {
     return db.query(
-        "INSERT INTO changeLog(dateChanged, bookID, changeUserID) VALUES(?, ?, ?)",
-        [Date.now(), bookID, changeUserID]
+        "INSERT INTO changelog(dateChanged, bookID, changeUserID) VALUES(?, ?, ?)",
+        [Date.now()+'', bookID, changeUserID]
     )
 }
 
-module.exports.logUserAdd = (userID, changeUserID) => {
+module.exports.logUserAdd = ([userID, changeUserID]) => {
     return db.query(
-        "INSERT INTO changeLog(dateCreated, userID, changeUserID) VALUES(?, ?, ?)",
-        [Date.now(), userID, changeUserID]
+        "INSERT INTO changelog(dateCreated, userID, changeUserID) VALUES(?, ?, ?)",
+        [Date.now()+'', userID, changeUserID]
     )
 }
 
-module.exports.logUserChange = (userID, changeUserID) => {
+module.exports.logUserChange = ([userID, changeUserID]) => {
+    console.log("db:", userID, changeUserID)
     return db.query(
-        "INSERT INTO changeLog(dateCreated, bookID, changeUserID) VALUES(?, ?, ?)",
-        [Date.now(), userID, changeUserID]
+        "INSERT INTO changelog(dateChanged, userID, changeUserID) VALUES(?, ?, ?)",
+        [Date.now()+'', userID, changeUserID]
     )
 }

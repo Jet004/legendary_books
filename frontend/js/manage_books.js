@@ -200,6 +200,8 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
         })
         .catch(error => {
             console.log(error)
+            // Let user know that update failes
+            alert("Update failed: unexpected error")
         })
 })
 
