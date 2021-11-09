@@ -126,6 +126,7 @@ router.get('/users', (req,res) => {
         })
 })
 
+
 // Define route for /api/users/:id which returns a single user by id
 router.get('/users/:id', validateParamUserId, (req,res) => {
     // Get userId from request paramaters

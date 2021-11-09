@@ -24,7 +24,6 @@ module.exports.logUserAdd = ([userID, changeUserID]) => {
 }
 
 module.exports.logUserChange = ([userID, changeUserID]) => {
-    console.log("db:", userID, changeUserID)
     return db.query(
         "INSERT INTO changelog(dateChanged, userID, changeUserID) VALUES(?, ?, ?)",
         [Date.now()+'', userID, changeUserID]

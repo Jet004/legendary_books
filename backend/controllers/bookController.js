@@ -1,6 +1,6 @@
 // Import express so we can create routes in this file
 const express = require('express')
-const fileUpload = require('express-fileupload')
+// Import fs so I can work with files in the file directory
 const fs = require('fs')
 
 const router = express.Router()

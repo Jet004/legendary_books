@@ -10,6 +10,7 @@ const connection = mysql.createPool({
     database: 'legendaryBooks'
 })
 
+
 // This wrapper will allow the use of promise functions like 
 // .then and .catch so that we can use it in an async way 
 // along with expressJS
@@ -25,4 +26,4 @@ const query = (sql, parameters) => {
     })
 }
 
-module.exports = { query }
+module.exports = { query, connection }
