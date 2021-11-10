@@ -45,6 +45,8 @@ server.use((req, res, next) => {
     ]
 
     const isImage = req.originalUrl.match(/\/[0-9]{13}.png|.jpg|.jpeg/)
+    // Redirect to index if accessed '/'
+    if(req.originalUrl === "/") res.redirect('index.html')
     
     // Let user view page if logged in
     if(userLoggedIn){

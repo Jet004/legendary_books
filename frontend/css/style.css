@@ -195,7 +195,7 @@ input[type="button"] {
 
 .delete {
     width: 110px;
-    background-color: rgb(223, 53, 53);
+    background-color: var(--main-btn-colour);
 }
 
 .clear {
