@@ -312,25 +312,10 @@ bookSearch.addEventListener('input', () => {
                 book.addEventListener('click', () => {
                     // Get the data for the selected book
                     let dataToPopulate = data.find(item => item.bookID == book.id)
-                    // Get form elements
-                    let formElements = document.getElementsByTagName('form')[0].elements
-                    // Populate the form with the book's data
-                    for(let elem of formElements){
-                        // Fill form with selected book/author data
-                        if(elem.name && elem.name != 'coverImagePath'){
-                            // Decode HTML entities if is string
-                            if(typeof dataToPopulate[elem.name] === 'string'){
-                                dataToPopulate[elem.name] = decodeHTMLEntities(dataToPopulate[elem.name])
-                            }
+                    
+                    // Populate book form
+                    populateBookForm(dataToPopulate)
 
-                            // Enter author name into author search field
-                            if(elem.name == 'authorSearch'){
-                                elem.value = dataToPopulate.authorName
-                            } else {
-                                elem.value = dataToPopulate[elem.name]
-                            }
-                        }
-                    }
                     // Close the search output box
                     bookSearchOutput.style.display = 'none'
                     bookSearch.value = decodeHTMLEntities(book.innerHTML)
@@ -339,6 +324,29 @@ bookSearch.addEventListener('input', () => {
 
         })
 })
+
+// Function to populate form with book data
+let populateBookForm = (dataToPopulate) => {
+    // Get form elements
+    let formElements = document.getElementsByTagName('form')[0].elements
+    // Populate the form with the book's data
+    for(let elem of formElements){
+        // Fill form with selected book/author data
+        if(elem.name && elem.name != 'coverImagePath'){
+            // Decode HTML entities if is string
+            if(typeof dataToPopulate[elem.name] === 'string'){
+                dataToPopulate[elem.name] = decodeHTMLEntities(dataToPopulate[elem.name])
+            }
+
+            // Enter author name into author search field
+            if(elem.name == 'authorSearch'){
+                elem.value = dataToPopulate.authorName
+            } else {
+                elem.value = dataToPopulate[elem.name]
+            }
+        }
+    }
+}
 
 // Set focus event listener to allow the result output box to be displayed
 bookSearch.addEventListener('focus', () => {
@@ -472,6 +480,25 @@ authorSearch.addEventListener('focus', () => {
 })
 
 //----------------------------- END Author Search -----------------------------//
+
+
+//----------------------------- START Populate Form on Load -----------------------------//
+// If user reached this page by clicking the update/delete link for a book on the view
+// books page then get the bookID from URL parameters and load data into form
+let urlParameters= new URLSearchParams(window.location.search)
+let autoLoadBookTitle = urlParameters.get('id')
+
+// Check if there is an id in the url
+if(autoLoadBookTitle){
+    // Id is present in url, fetch book data from backend to populate the form
+    fetch(`/api/books/search/${autoLoadBookTitle}`)
+        .then(response => response.json())
+        .then(data => {
+            populateBookForm(data[0])
+        })
+}
+//----------------------------- END Populate Form on Load -----------------------------//
+
 
 //----------------------------- START Clear Form Button -----------------------------//
 

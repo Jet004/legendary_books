@@ -4,6 +4,7 @@
     --nav-bg-color: #495057;
     --container-bg-color: #eee;
     --footer-bg-color: #f4f2e9;
+    --main-btn-colour: rgb(72, 72, 185);
 }
 
 * {
@@ -11,8 +12,9 @@
 }
 
 body {
-    min-width: 280px;
+    min-width: 340px;
     margin: 0;
+    font-size: 18px;
 }
 
 a {
@@ -25,6 +27,7 @@ ul {
 }
 
 header {
+    width: 100%;
     background-color: var(--header-bg-color);
     display: flex;
     justify-content: center;
@@ -34,6 +37,20 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+header #logo {
+    display: flex;
+}
+
+header #logo img {
+    width: 80px;
+}
+
+header #logo a {
+    align-self: center;
+    font-size: 25px;
+    margin-left: 20px;
 }
 
 header #login-cont a,
@@ -75,7 +92,7 @@ nav a:hover {
 main {
     background-color: var(--main-bg-color);
     width: 100%;
-    min-height: 100vh;
+    min-height: 80vh;
     display: flex;
     justify-content: center;
     padding: 40px 0px;
@@ -91,18 +108,35 @@ main {
     padding: 20px 0px 40px 0px;
 }
 
+#splash {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#splash img {
+    width: 200px;
+}
+
+#splash a {
+    color: blue;
+}
+
 .form-item {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     transition: all ease 0.5s;
 }
 
-.form-item input {
+.form-item input:not([type="button"]) {
+    font-size: 16px;
     width: 100%;
-    height: 20px;
-    padding: 12px;
+    padding: 6px 12px;
     box-sizing: border-box;
+    border-width: 1px;
+    border-radius: 8px;
 }
 
 .form-item select {
@@ -110,6 +144,8 @@ main {
     height: 30px;
     padding-left: 12px;
     box-sizing: border-box;
+    border-width: 1px;
+    border-radius: 8px;
 }
 
 .form-item input[type="file"] {
@@ -126,6 +162,8 @@ main {
 .search {
     display: flex;
     flex-direction: column;
+    border-width: 1px;
+    border-radius: 8px;
 }
 
 .form-submit {
@@ -135,24 +173,62 @@ main {
     margin-top: 20px;
 }
 
-.form-submit input {
-    width: 100px;
+input[type="button"] {
+    color: white;
+    font-size: 14px;
+    display: inline-block;
+    padding: 5px;
+    border: 2px solid #666;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.add {
+    width: 110px;
+    background-color: var(--main-btn-colour);
+}
+
+.update {
+    width: 110px;
+    background-color: var(--main-btn-colour);
+}
+
+.delete {
+    width: 110px;
+    background-color: rgb(223, 53, 53);
+}
+
+.clear {
+    width: 200px;
+    background-color: var(--main-btn-colour);
+    margin: 20px 0px;
 }
 
 .book-item {
-    margin: 20px;
-    padding: 20px;
+    margin: 10px;
+    padding: 30px;
     box-sizing: border-box;
     border: 1px solid #444;
     box-shadow: 2px 2px 5px #444;
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
 }
 
-.book-item img {
-    width: 100px;
-    height: 140px;
-    border: 1px solid #444;
+.book-item .book-detail > div {
+    margin: 5px 0px;
+}
+
+.book-item .book-detail #book-buttons {
+    background-color: var(--main-btn-colour);
+    font-size: 14px;
+    display: inline-block;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.book-item .book-detail #book-buttons a {
+    color: white;
 }
 
 .output-row {
@@ -162,12 +238,22 @@ main {
 footer {
     background-color: var(--footer-bg-color);
     height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+footer #developer {
+    font-family: monospace;
 }
 
 /* CSS for handling form validation & user input */
 
 .error {
     display: none;
+    width: 100%;
     font-size: 14px;
     margin-top: 10px;
     padding-top: 10px;
@@ -175,11 +261,17 @@ footer {
     box-sizing: border-box;
 }
 
-form .form-item > input:focus {
+.search > input:focus,
+.form-item select:focus,
+form .form-item > input:not([type="file"]):focus {
     outline-style: none;
-    box-shadow: 0px 0px 8px rgb(77, 120, 201);
-    border: 2px solid rgb(77, 120, 201);
-    border-radius: 20px;
+    box-shadow: 0px 0px 2px rgb(77, 120, 201);
+    border: 1px solid rgb(77, 120, 201);
+    border-radius: 8px;
+}
+
+.form-item > input[type="file"] {
+    outline-style: none;
 }
 
 form input:invalid:not(:placeholder-shown) {
@@ -195,11 +287,21 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
 }
 
 
-@media screen and (max-width: 420px){
+@media screen and (max-width: 560px){
     #header-content {
         width: 100%;
         height: 80px;
         margin: 0px 40px;
+    }
+
+    #header-content #logo img {
+        width: 50px;
+    }
+
+    #header-content #logo a,
+    #header-content #login-cont a,
+    #header-content #logout-cont a {
+        font-size: 18px;
     }
 
     nav {
@@ -224,12 +326,25 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
     }
 
     .form-item {
-        width: 285px;
+        width: 330px;
     }
 
     .book-item {
         width: 95%;
-        font-size: 14px;
+        font-size: 16px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .book-item img {
+        width: 250px;
+        height: 350px;
+        margin-bottom: 20px;
+    }
+
+    .book-item .book-detail {
+        width: 250px;
+        font-size: 18px;
     }
 
     .mobile-display-none {
@@ -241,7 +356,7 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
     }
 }
 
-@media screen and (min-width: 421px) and (max-width: 770px){
+@media screen and (min-width: 561px) and (max-width: 770px){
     #header-content {
         width: 100%;
         height: 100px;
@@ -260,6 +375,9 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
         justify-content: space-between;
         margin: 15px 40px;
         padding: 0px;
+    }
+    nav a {
+        font-size: 16px;
     }
    
     .main-container {
@@ -288,6 +406,16 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
     .book-item {
         width: 90%;
     }
+    
+    .book-item img {
+        width: 120px;
+        height: 168px;
+    }
+
+    .book-item .book-detail {
+        font-size: 16px;
+        margin-left: 25px;
+    }
 
     .mobile-display {
         display: none;
@@ -300,7 +428,7 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
 
 @media screen and (min-width: 771px){
     #header-content {
-        width: 70%;
+        width: 80%;
         height: 100px;
     }
 
@@ -311,7 +439,7 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
     }
     
     nav > ul {
-        width: 70%;
+        width: 80%;
         display: flex;
         justify-content: space-between;
         padding: 0px;
@@ -323,6 +451,7 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
 
     .main-container {
         width: 70%;
+        min-width: 700px
     }
 
     .form-item {
@@ -340,7 +469,16 @@ form input:valid:not(:placeholder-shown):not([type="submit"]) {
     }
 
     .book-item {
-        width: 75%;
+        width: 85%;
+    }
+
+    .book-item img {
+        width: 150px;
+        height: 210px;
+    }
+
+    .book-item .book-detail {
+        margin-left: 25px;
     }
 
     .mobile-display {

@@ -12,6 +12,8 @@ const { param, body, validationResult } = require('express-validator')
 const bookModel = require('../models/bookModel')
 // Import bookAuthor model so I can search for books with author data included
 const bookAuthorModel = require('../models/bookAuthorModel')
+// Import bookAuthorLog model so I can get all book related information in one object
+const bookAuthorLogModel = require('../models/bookAuthorLogModel')
 // Import logging model so we can log when books are added or changed
 const loggingModel = require('../models/loggingModel')
 
@@ -136,6 +138,52 @@ router.get('/books', (req,res) => {
             // Database returned an error, log it to server console and respond
             console.log(error)
             res.status(500).json("query error")
+        })
+})
+
+// GET /api/books/list - return all books with author and chagelog data
+router.get('/books/list', (req,res) => {
+    // No input to validate, just query the database
+    bookAuthorLogModel.getAllBooksWithAuthorsAndLogs()
+        .then(results => {
+            // Check that the database returned results
+            if(results.length > 0){
+                // We have results, modify data to correct format
+                let books = results
+                
+                for(book of books){
+                    // Modify cover image path to the form needed
+                    book.coverImagePath = book.coverImagePath.split('/')[2]
+                    // Convert date created to date time
+                    book.dateCreated = new Date(Number(book.dateCreated)).toLocaleString()
+                    // Convert date changed to date time if not null
+                    if(book.dateChanged != null){
+                        book.dateChanged = new Date(Number(book.dateChanged)).toLocaleString()
+                    } else {
+                        book.dateChanged = ''
+                    }
+                }
+                // Respond with results
+                
+                res.status(200).json({
+                    "status": "success",
+                    "books": results
+                })
+            } else {
+                // No results, respond with not found
+                res.status(404).json({
+                    "status": "failed",
+                    "message": "No books found"
+                })
+            }
+        })
+        .catch(error => {
+            // Database threw an error, log error and respond with server error
+            console.log(error)
+            res.status(500).json({
+                "status": "error",
+                "message": "query error"
+            })
         })
 })
 

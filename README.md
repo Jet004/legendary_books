@@ -2,11 +2,12 @@
 
 -- TODO
 
-list_books.html
-list_books.js
+-- AFTER
 
-style.css
-
+README must include login details
+include sql dump in assessment upload
+Screenshots of code sections
+testing/debugging?
 
 -- COMPLETE
 
@@ -28,3 +29,7 @@ logout function in script.js
 localStorage object to track login state
 loggingModel
 Access control middleware
+list_books.html
+list_books.js
+index.html
+style.css

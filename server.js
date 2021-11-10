@@ -32,23 +32,26 @@ server.use((req, res, next) => {
         '/js/login.js',
         '/index.html',
         '/js/script.js',
+        '/open-book.png',
         '/views/includes/header.html',
         '/views/includes/nav.html',
         '/views/includes/footer.html',
         '/list_books.html',
         '/js/list_books.js',
         '/favicon.ico',
-        '/api/books',
+        '/api/books/list',
         '/api/users/login',
         '/css/style.css'
     ]
 
+    const isImage = req.originalUrl.match(/\/[0-9]{13}.png|.jpg|.jpeg/)
+    
     // Let user view page if logged in
     if(userLoggedIn){
         next()
     } else {
         // User not logged in, let them through if URL is allowed
-        if(allowedURLs.includes(req.originalUrl)){
+        if(allowedURLs.includes(req.originalUrl) || isImage){
             next()   
         } else {
             // URL not allowed, redirect to login page

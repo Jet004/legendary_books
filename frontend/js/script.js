@@ -33,9 +33,6 @@ const logout = () => {
 let userLoggedIn = localStorage.getItem('userLoggedIn')
 if(userLoggedIn != 'true') userLoggedIn = false
 
-console.log(userLoggedIn)
-
-
 //----------------------------- END LocalStorage -----------------------------//
 
 
