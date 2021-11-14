@@ -5,7 +5,6 @@ fetch('/api/books/list')
         let bookListHTML = ``
         // Iterate over book list
         for(book of data.books){
-            console.log(book)
             // Build DOM book-item from data and only append dateCreated, dateChanged and 
             // update/delete button if user logged in
             if(userLoggedIn){

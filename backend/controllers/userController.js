@@ -49,7 +49,8 @@ const validateCommon = [
         .escape(),
     // permissions
     body('permissions').exists(checkFalsy = true).withMessage("Exists")
-        .matches("admin").withMessage("Pattern")
+        .matches("[A-Za-z]").withMessage("Pattern")
+        .isLength({min: 1, max: 20}).withMessage("Length")
         .trim()
         .escape()
 ]
@@ -57,7 +58,7 @@ const validateCommon = [
 // Set out validation criteria specific to add book
 const validateAddUser = [
     // password
-    body('password').exists().withMessage("Exists - can be empty")
+    body('password').exists().withMessage("Exists")
         .notEmpty().withMessage("Not Empty")
         .matches("[A-Za-z0-9]").withMessage("Pattern")
         .isLength({min: 6, max: 50}).withMessage("Length")
@@ -101,6 +102,22 @@ const validateSearchUserName = [
         .isLength({min:0, max:100}).withMessage("Length")
         .trim()
         .escape()
+]
+
+// Set out validation criteria for login
+const validateLogin = [
+    //username
+    body('username').exists(checkFalsy = true).withMessage("Exists")
+        .isAlphanumeric().withMessage("Type: ALPHANUMERIC")
+        .isLength({min: 3, max: 50}).withMessage("Length")
+        .trim()
+        .escape(),
+    // password
+    body('password').exists().withMessage("Exists")
+        .notEmpty().withMessage("Not Empty")
+        .matches("[A-Za-z0-9]").withMessage("Pattern")
+        .isLength({min: 6, max: 50}).withMessage("Length")
+        .trim()
 ]
 
 
@@ -303,7 +320,8 @@ router.patch('/users/update', validateCommon, validateUpdateUser, validateBodyUs
                 // Update succeeded, return success message
                 res.status(200).json({
                     "status": "success",
-                    "message": "successfully updated user with id: " + user.userID
+                    "message": "successfully updated user with id: " + user.userID,
+                    "permissions": req.session.user.permissions
                 })
 
                 // Return userID and id of currently logged in user for logging query
@@ -322,7 +340,6 @@ router.patch('/users/update', validateCommon, validateUpdateUser, validateBodyUs
         })
         .then(loggingModel.logUserChange)
         .then(results => {
-            console.log(results)
             // Check that logging was successful
             if(results.insertId){
                 // Logging successful, log to console
@@ -386,12 +403,17 @@ router.delete('/users/:id', validateParamUserId, (req,res) => {
         })
 })
 
-router.post('/users/login', (req,res) => {
+router.post('/users/login', validateLogin, (req,res) => {
 
     // Get user login credentials from request body
     const loginDetails = req.body
 
     // Check for validation errors
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        // There are validation errors, respond with bad request
+        return res.status(400).json({ error: error.array() })
+    }
 
     // Search databse for username and check if passwords match
     userModel.getAuthByUsername(loginDetails.username)

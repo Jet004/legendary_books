@@ -44,21 +44,38 @@ server.use((req, res, next) => {
         '/css/style.css'
     ]
 
+    adminAllowedURLs = [
+        '/manage_users.html',
+        '/manage_users.js',
+        '/api/users',
+        '/api/users/:id',
+        '/api/users/search/:input',
+        '/api/users/add',
+        '/api/users/update'
+    ]
+
     const isImage = req.originalUrl.match(/\/[0-9]{13}.png|.jpg|.jpeg/)
     // Redirect to index if accessed '/'
     if(req.originalUrl === "/") res.redirect('index.html')
-    
-    // Let user view page if logged in
-    if(userLoggedIn){
-        next()
-    } else {
-        // User not logged in, let them through if URL is allowed
-        if(allowedURLs.includes(req.originalUrl) || isImage){
-            next()   
+    if(userLoggedIn && adminAllowedURLs.includes(req.originalUrl)){
+        if(req.session.user.permissions === "admin"){
+            next()
         } else {
-            // URL not allowed, redirect to login page
-            res.redirect('/login.html')
+            // User should not be accessing this page, respond with unauthorised
+            res.status(401).json({
+                "status": "failed",
+                "message": "You are not authorised to access this resource"
+            })
         }
+    } else if(userLoggedIn){
+        // Let user view any other page if logged in
+        next()
+    } else if(allowedURLs.includes(req.originalUrl) || isImage){
+        // User not logged in, let them through if URL is allowed
+        next()   
+    } else {
+        // URL not allowed, redirect to login page
+        res.redirect('/login.html')
     }
 })
 

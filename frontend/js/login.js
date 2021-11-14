@@ -28,6 +28,7 @@ const login = () => {
                 alert(data.message)
                 // Set logged in status to localstorage
                 localStorage.setItem("userLoggedIn", "true")
+                localStorage.setItem("userPermissions", data.permissions)
                 // Redirect to book list
                 window.location.href = 'list_books.html'
             } else {

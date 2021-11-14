@@ -12,6 +12,7 @@ const logout = () => {
                 // Logout was successful, alert to user and redirect to login page
                 alert(data.message)
                 localStorage.setItem("userLoggedIn", "false")
+                localStorage.setItem("userPermissions", "")
                 window.location.href = 'login.html'
             }
             // No need to do anything if logout failed. It would mean that there
@@ -32,6 +33,10 @@ const logout = () => {
 // If userLoggedIn not set in localStorage - set to false
 let userLoggedIn = localStorage.getItem('userLoggedIn')
 if(userLoggedIn != 'true') userLoggedIn = false
+
+// Manage permissions
+let userPermissions = localStorage.getItem('userPermissions')
+if(!userPermissions) userPermissions = ''
 
 //----------------------------- END LocalStorage -----------------------------//
 
@@ -67,6 +72,27 @@ const fetchSiteIncludes = () => {
         .then(response => response.text())
         .then(data => {
             navElement.outerHTML = data
+
+            // Only show links the user has permission to see
+            const hideUnauthorisedElements = (link) => {
+                link.style.visibility = 'hidden'
+            }
+
+            // Hide all CMS related links when not logged in
+            if(!userLoggedIn){
+                const CMSLinks = document.getElementsByClassName('logged-in')
+                for(const link of CMSLinks){
+                    hideUnauthorisedElements(link)
+                }
+            }
+
+            // Hide manage users link if user permissions not admin
+            if(userPermissions !== "admin"){
+                const userCMSLinks = document.getElementsByClassName('admin-perms')
+                for(let link of userCMSLinks){
+                    hideUnauthorisedElements(link)
+                }
+            }
         })
 
     fetch('../views/includes/footer.html')
