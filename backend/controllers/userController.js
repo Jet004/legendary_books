@@ -433,7 +433,8 @@ router.post('/users/login', validateLogin, (req,res) => {
                     // Login was successful, respond with 200 OK
                     res.status(200).json({
                         "status": "success",
-                        "message": "Login successful"
+                        "message": "Login successful",
+                        "permissions": req.session.user.permissions
                     })
                 } else {
                     // Login failed, respond with bad request

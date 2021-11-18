@@ -26,6 +26,7 @@ const login = () => {
             if(data.status === "success"){
                 // Alert user that login was successful
                 alert(data.message)
+                
                 // Set logged in status to localstorage
                 localStorage.setItem("userLoggedIn", "true")
                 localStorage.setItem("userPermissions", data.permissions)

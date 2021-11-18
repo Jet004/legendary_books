@@ -102,7 +102,7 @@ document.getElementById('update-book-btn').addEventListener('click', () => {
     // Get form element and convert data to JSON object
     const form = document.getElementById('book-form')
     const formObject = Object.fromEntries(new FormData(form))
-    
+
     // Get book id from hidden element to pass in request URI
     const bookID = form['bookID']
 
